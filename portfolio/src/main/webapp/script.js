@@ -26,3 +26,34 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+function addNav() {
+  const navbar="navbar.html";
+  let xhttp = new XMLHttpRequest();
+  xhttp.open("GET", navbar, true);
+  xhttp.send();
+  
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementsByTagName("navbar")[0].innerHTML = this.responseText;
+    }
+  };
+}
+
+// Todo: update with math function to change speed based on position
+function scrollToId(id) {
+  var ele = document.getElementById(id);
+  const desiredDist = 10;
+
+  function scrollTo(x, y, lastTop) {
+      var topY = ele.getBoundingClientRect().top;
+      if (topY == lastTop || topY < desiredDist) {
+        return;
+      }
+
+      window.scroll(x, y + 10);
+      setTimeout(function() {scrollTo(x, y + 10, topY)}, 5);
+  }
+
+  scrollTo(window.scrollX, window.scrollY, 0);
+}
