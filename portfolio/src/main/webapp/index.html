@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Jeremy Weiss</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="images/favicon.svg">
     <script src="script.js"></script>
@@ -11,20 +14,32 @@
   <body>
     <navbar></navbar>
     <div class="content">
-      <h1>Jeremy Weiss</h1>
-      <div id="bio">
-        <p>This is my portfolio.</p>
-        <center>
-          <img src="images/jeremy.jpg" width="50%">
-        </center>
+      <div class="container p-5" id="bio">
+        <div class="row">
+          <div class="col" style="align-self: center;">
+            <img src="images/jeremy.jpg" style="max-width: 100%; object-fit: contain;">
+          </div>
+          <div class="col" style="align-self: center;">
+            <h1><strong>About Me</strong></h1>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tincidunt est ac risus pharetra rhoncus. Vivamus lobortis nunc sit amet varius scelerisque. Nulla ultricies nunc non orci placerat malesuada. Quisque aliquet erat metus, a rutrum nunc lacinia a. Vestibulum elementum ullamcorper arcu, eu consectetur lacus egestas quis. Nulla a justo quis enim fringilla pellentesque. Aenean congue hendrerit dignissim. Morbi id commodo sapien, vitae ultrices lectus. Curabitur eleifend dui a faucibus dictum.
+
+Mauris at hendrerit quam. Maecenas commodo mauris et orci lobortis, et hendrerit purus luctus. Mauris non elit at erat congue mollis. Sed eros orci, placerat at vestibulum ut, semper vel augue. Phasellus a convallis elit. Suspendisse et dignissim odio. Quisque sit amet tempor arcu. Nam lectus nunc, semper in feugiat ut, cursus quis erat. Vivamus vel orci arcu. Fusce augue mi, cursus in lacus non, bibendum euismod ante. Suspendisse dictum fringilla aliquam. Duis sodales in nulla eget laoreet. Curabitur hendrerit hendrerit nisl. Proin hendrerit egestas libero, at consequat magna. Fusce aliquet elit sed nulla elementum elementum. In sit amet maximus diam, ut ullamcorper nibh.
+          </div>
+        </div>
+      </div>
+      <div>
+        <h1>Jeremy Weiss</h1>
+        <div>
+          <p>This is my portfolio.</p>
+          <center>
+            <img src="images/jeremy.jpg" width="50%">
+          </center>
+        </div>
+      </div>
+      <div class="container p-3" id="projects">
+        <h1>Projects</h1>
       </div>
     </div>
-    <div class="content" id="projects">
-      <h1>Projects</h1>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
 
   <script>

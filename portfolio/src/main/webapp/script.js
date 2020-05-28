@@ -45,15 +45,23 @@ function scrollToId(id) {
   var ele = document.getElementById(id);
   const desiredDist = 10;
 
-  function scrollTo(x, y, lastTop) {
+  function scrollTo(x, y, lastTop, direction) {
       var topY = ele.getBoundingClientRect().top;
-      if (topY == lastTop || topY < desiredDist) {
+            console.log(y, topY);
+      if (topY == lastTop) {
+        return;
+      } else if (topY > desiredDist - 5 && topY < desiredDist) {
+        window.scroll(x, y + desiredDist - topY);
         return;
       }
 
-      window.scroll(x, y + 10);
-      setTimeout(function() {scrollTo(x, y + 10, topY)}, 5);
+      window.scroll(x, y + direction);
+      setTimeout(function() {scrollTo(x, y + direction, topY, direction)}, 1);
   }
 
-  scrollTo(window.scrollX, window.scrollY, 0);
+  var direction = 5;
+  if (ele.getBoundingClientRect().top < desiredDist) {
+    direction = -5;
+  }
+  scrollTo(window.scrollX, window.scrollY, 0, direction);
 }

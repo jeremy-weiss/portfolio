@@ -1,12 +1,14 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Jeremy</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-md navbar-light bg-light border fixed-top">
+  <a class="navbar-brand" href="#" onclick=scrollToId("content")><span class="blue">Jeremy Weiss</span></a>
+  <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-target="#navbar" data-toggle="collapse" type="button">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link active" href="#" onclick=scrollToId("bio")>About Me <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" href="#" onclick=scrollToId("projects")>Projects</a>
-    </div>
-  </div>
+  <div class="collapse navbar-collapse" id="navbar">
+    <ul class="navbar-nav mr-auto mt-2">
+      <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('bio')">About Me</a></li>
+      <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('projects')">Projects</a></li>
+    </ul>
+    <ul class="navbar-nav ml-auto mt-2">
+      <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+    </ul>
 </nav>
