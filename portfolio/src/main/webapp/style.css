@@ -1,9 +1,107 @@
-#content {
+.content {
   margin-left: auto;
   margin-right: auto;
-  width: 650px;
+  margin-top: 50px;
+  background-color: white;
+  color: black;
+}
+
+.content * {
+  background-color: white;
+  color: black;
 }
 
 #greeting-container {
   margin-top: 20px;
+}
+
+nav {
+  background-color: black;
+}
+
+nav * {
+  color: white
+}
+
+nav .navbar-brand {
+  font-size: xx-large;
+}
+
+html * {
+  font-family: 'Raleway', sans-serif;
+}
+
+footer {
+  text-align: center;
+  background-color: black;
+}
+
+footer ul li {
+  width: 80px;
+  height: 100px;
+  display: inline-block;
+  margin: 20px;
+  list-style: none;
+}
+
+footer ul li div {
+  width: 80px;
+  height: 80px;
+  font-size: 3.4em;
+  text-align: center;
+  line-height: 80px;
+  background-color: white;
+  transition: all 0.5s ease;
+}
+
+footer ul li div:hover {
+  border-radius: 100px;
+}
+
+footer ul li div a {
+  color: black;
+}
+
+.project {
+  position: relative;
+}
+
+.project a {
+  text-decoration: none;
+}
+
+.project:hover {
+  box-shadow: 0px 9px 24px rgba(0,0,0,0.3);
+  -webkit-transition: all 150ms ease-in-out;
+  transition: all 150ms ease-in-out;
+}
+
+.project-image {
+  position: relative;
+}
+
+.tint {
+  background-color: #ADD8E6;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  top: 0px;
+}
+
+.project:hover .tint {
+  -webkit-animation: fadeInFromNone 0.5s ease-out;
+  animation: fadeInFromNone 0.5s ease-out;
+  opacity: 0.3;
+}
+
+
+@-webkit-keyframes fadeInFromNone {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.3;
+  }
 }

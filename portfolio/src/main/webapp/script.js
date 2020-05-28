@@ -12,17 +12,65 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+// Injects the navbar into the page
+function addNav() {
+  const navbar="navbar.html";
+  let xhttp = new XMLHttpRequest();
+  xhttp.open("GET", navbar, true);
+  xhttp.send();
+  
+  xhttp.onreadystatechange = function() {
+    if (this.readyState === 4 && this.status === 200) {
+      document.getElementsByTagName("navbar")[0].innerHTML = this.responseText;
+    }
+  };
+}
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+// Todo: update with math function to change speed based on distance to target
+// Scroll animation
+function scrollToId(id) {
+  var ele = document.getElementById(id);
+  const desiredDist = 10;
+  var magnitude = 5;
+  var offset = 10;
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+  function scrollTo(x, y, lastTop, direction) {
+    var topY = ele.getBoundingClientRect().top;
+    if (topY === lastTop) {
+      return;
+    } else if (topY > desiredDist - magnitude + offset && topY < desiredDist + magnitude + offset) {
+      window.scroll(x, y + desiredDist - topY - offset);
+      return;
+    }
+    window.scroll(x, y + direction);
+    setTimeout(function() {scrollTo(x, y + direction, topY, direction)}, 5);
+  }
+
+  var direction = magnitude;
+  if (ele.getBoundingClientRect().top < desiredDist) {
+    direction = -magnitude;
+  }
+  scrollTo(window.scrollX, window.scrollY, 0, direction);
+}
+
+// Highlight on mouseover
+function highlightProjects() {
+  var projects = document.getElementsByClassName("project");
+    var node = document.createElement("span");
+    node.classList.add("tint");
+    for (var i = 0; i < projects.length; i++) {
+      var project = projects[i];
+      project.appendChild(node);
+  }
+}
+
+// Have links update the url bar without redirecting
+function noRedir() {
+  var links = document.getElementsByTagName("a");
+  for (var i = 0; i < links.length; i++) {
+    links[i].onclick = function(e) {
+        window.history.pushState("", "", e.target.href);
+        return false;
+    }
+  }
 }
