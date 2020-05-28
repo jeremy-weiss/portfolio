@@ -2,17 +2,62 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
-  font-family: "Inter var", sans-serif;
+  background-color: white;
+  color: black;
+}
+
+.content * {
+  background-color: white;
+  color: black;
 }
 
 #greeting-container {
   margin-top: 20px;
 }
 
+nav {
+  background-color: black;
+}
+
+nav * {
+  color: white
+}
+
 nav .navbar-brand {
   font-size: xx-large;
 }
 
-nav .navbar-brand .blue {
-    color: #537fbe;
+html * {
+  font-family: 'Raleway', sans-serif;
+}
+
+footer {
+  text-align: center;
+  background-color: black;
+}
+
+footer ul li {
+  width: 80px;
+  height: 100px;
+  display: inline-block;
+  margin: 20px;
+  list-style: none;
+}
+
+footer ul li div {
+  width: 80px;
+  height: 80px;
+  font-size: 3.4em;
+  text-align: center;
+  line-height: 80px;
+  background-color: white;
+  transition: all 0.5s ease;
+}
+
+footer ul li div:hover {
+  border-radius: 100px;
+}
+
+footer ul li div a {
+  color: black;
 }

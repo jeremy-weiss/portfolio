@@ -10,9 +10,26 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="images/favicon.svg">
     <script src="script.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <navbar></navbar>
+    <navbar>
+      <nav class="navbar navbar-expand-md border fixed-top">
+        <a class="navbar-brand" href="#" onclick=scrollToId("content")><span class="blue">Jeremy Weiss</span></a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-target="#navbar" data-toggle="collapse" type="button">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav mr-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('bio')">About Me</a></li>
+            <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('projects')">Projects</a></li>
+          </ul>
+          <ul class="navbar-nav ml-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+          </ul>
+      </nav>
+    </navbar>
     <div class="content">
       <div class="container p-5" id="bio">
         <div class="row">
@@ -21,25 +38,55 @@
           </div>
           <div class="col" style="align-self: center;">
             <h1><strong>About Me</strong></h1>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tincidunt est ac risus pharetra rhoncus. Vivamus lobortis nunc sit amet varius scelerisque. Nulla ultricies nunc non orci placerat malesuada. Quisque aliquet erat metus, a rutrum nunc lacinia a. Vestibulum elementum ullamcorper arcu, eu consectetur lacus egestas quis. Nulla a justo quis enim fringilla pellentesque. Aenean congue hendrerit dignissim. Morbi id commodo sapien, vitae ultrices lectus. Curabitur eleifend dui a faucibus dictum.
-
-Mauris at hendrerit quam. Maecenas commodo mauris et orci lobortis, et hendrerit purus luctus. Mauris non elit at erat congue mollis. Sed eros orci, placerat at vestibulum ut, semper vel augue. Phasellus a convallis elit. Suspendisse et dignissim odio. Quisque sit amet tempor arcu. Nam lectus nunc, semper in feugiat ut, cursus quis erat. Vivamus vel orci arcu. Fusce augue mi, cursus in lacus non, bibendum euismod ante. Suspendisse dictum fringilla aliquam. Duis sodales in nulla eget laoreet. Curabitur hendrerit hendrerit nisl. Proin hendrerit egestas libero, at consequat magna. Fusce aliquet elit sed nulla elementum elementum. In sit amet maximus diam, ut ullamcorper nibh.
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tincidunt est ac risus pharetra rhoncus.
+              Vivamus lobortis nunc sit amet varius scelerisque. Nulla ultricies nunc non orci placerat malesuada.
+              Quisque aliquet erat metus, a rutrum nunc lacinia a. Vestibulum elementum ullamcorper arcu, eu consectetur lacus egestas quis.
+              Nulla a justo quis enim fringilla pellentesque. Aenean congue hendrerit dignissim. Morbi id commodo sapien, vitae ultrices lectus.
+              Curabitur eleifend dui a faucibus dictum.
+            </p>
+            <p>
+              Mauris at hendrerit quam. Maecenas commodo mauris et orci lobortis, et hendrerit purus luctus.
+              Mauris non elit at erat congue mollis. Sed eros orci, placerat at vestibulum ut, semper vel augue.
+              Phasellus a convallis elit. Suspendisse et dignissim odio. Quisque sit amet tempor arcu.
+              Nam lectus nunc, semper in feugiat ut, cursus quis erat. Vivamus vel orci arcu.
+              Fusce augue mi, cursus in lacus non, bibendum euismod ante. Suspendisse dictum fringilla aliquam.
+              Duis sodales in nulla eget laoreet. Curabitur hendrerit hendrerit nisl. Proin hendrerit egestas libero, at consequat magna.
+              Fusce aliquet elit sed nulla elementum elementum. In sit amet maximus diam, ut ullamcorper nibh.
+            </p>
           </div>
-        </div>
-      </div>
-      <div>
-        <h1>Jeremy Weiss</h1>
-        <div>
-          <p>This is my portfolio.</p>
-          <center>
-            <img src="images/jeremy.jpg" width="50%">
-          </center>
         </div>
       </div>
       <div class="container p-3" id="projects">
         <h1>Projects</h1>
       </div>
     </div>
+    <footer>
+      <ul>
+        <li>
+          <div class="facebook">
+            <a href="https://facebook.com/jwizzlejr/">
+              <i class="fa fa-facebook" aria-hidden="true"></i>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="linkedin">
+            <a href="https://www.linkedin.com/in/jeremy-weiss-5b8301177/">
+              <i class="fa fa-linkedin" aria-hidden="true"></i>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="github">
+            <a href="https://github.com/jeremy-weiss/">
+              <i class="fa fa-github" aria-hidden="true"></i>
+            </a>
+          </div>
+        </li>
+      </ul>
+    </footer>
+
   </body>
 
   <script>
