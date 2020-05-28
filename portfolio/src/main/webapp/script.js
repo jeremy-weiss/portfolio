@@ -65,3 +65,14 @@ function scrollToId(id) {
   }
   scrollTo(window.scrollX, window.scrollY, 0, direction);
 }
+
+function highlightProjects() {
+  var projects = document.getElementsByClassName("project");
+    var node = document.createElement("span");
+    node.classList.add("tint");
+    for (var i = 0; i < projects.length; i++) {
+      var project = projects[i];
+      project.insertBefore(node);
+      project.appendChild(node);
+  }
+}
