@@ -34,7 +34,7 @@ function addNav() {
   xhttp.send();
   
   xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+    if (this.readyState === 4 && this.status === 200) {
       document.getElementsByTagName("navbar")[0].innerHTML = this.responseText;
     }
   };
@@ -44,24 +44,24 @@ function addNav() {
 function scrollToId(id) {
   var ele = document.getElementById(id);
   const desiredDist = 10;
+  var magnitude = 5;
+  var offset = 10;
 
   function scrollTo(x, y, lastTop, direction) {
-      var topY = ele.getBoundingClientRect().top;
-            console.log(y, topY);
-      if (topY == lastTop) {
-        return;
-      } else if (topY > desiredDist - 5 && topY < desiredDist) {
-        window.scroll(x, y + desiredDist - topY);
-        return;
-      }
-
-      window.scroll(x, y + direction);
-      setTimeout(function() {scrollTo(x, y + direction, topY, direction)}, 1);
+    var topY = ele.getBoundingClientRect().top;
+    if (topY === lastTop) {
+      return;
+    } else if (topY > desiredDist - magnitude + offset && topY < desiredDist + magnitude + offset) {
+      window.scroll(x, y + desiredDist - topY - offset);
+      return;
+    }
+    window.scroll(x, y + direction);
+    setTimeout(function() {scrollTo(x, y + direction, topY, direction)}, 5);
   }
 
-  var direction = 5;
+  var direction = magnitude;
   if (ele.getBoundingClientRect().top < desiredDist) {
-    direction = -5;
+    direction = -magnitude;
   }
   scrollTo(window.scrollX, window.scrollY, 0, direction);
 }
@@ -72,7 +72,15 @@ function highlightProjects() {
     node.classList.add("tint");
     for (var i = 0; i < projects.length; i++) {
       var project = projects[i];
-      project.insertBefore(node);
       project.appendChild(node);
+  }
+}
+
+function noRedir() {
+  var links = document.getElementsByTagName("a");
+  for (var i = 0; i < links.length; i++) {
+    links[i].onclick = function(e) {
+        window.history.pushState("", "", e.target.href);
+    }
   }
 }
