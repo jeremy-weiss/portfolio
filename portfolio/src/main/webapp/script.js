@@ -12,21 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
-
+// Injects the navbar into the page
 function addNav() {
   const navbar="navbar.html";
   let xhttp = new XMLHttpRequest();
@@ -40,7 +26,8 @@ function addNav() {
   };
 }
 
-// Todo: update with math function to change speed based on position
+// Todo: update with math function to change speed based on distance to target
+// Scroll animation
 function scrollToId(id) {
   var ele = document.getElementById(id);
   const desiredDist = 10;
@@ -66,6 +53,7 @@ function scrollToId(id) {
   scrollTo(window.scrollX, window.scrollY, 0, direction);
 }
 
+// Highlight on mouseover
 function highlightProjects() {
   var projects = document.getElementsByClassName("project");
     var node = document.createElement("span");
@@ -76,11 +64,13 @@ function highlightProjects() {
   }
 }
 
+// Have links update the url bar without redirecting
 function noRedir() {
   var links = document.getElementsByTagName("a");
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
         window.history.pushState("", "", e.target.href);
+        return false;
     }
   }
 }
