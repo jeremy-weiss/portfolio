@@ -18,13 +18,28 @@ function addNav() {
 }
 
 function addContentToId(id, url, updateUrl) {
+  if (!this.requested) {
+    this.requested = new Set();
+  }
+
+  if (url in this.requested) {
+    document.getElementById(url).style.display = "block";
+    return;
+  }
+
   var xhttp = new XMLHttpRequest();
 
   xhttp.onreadystatechange = function() {
-    if (this.readyState === 4 && this.status === 200) {
+    if (this.readyState === 4) {
       var node = document.createElement("div");
       node.classList.add("adv-desc")
-      node.innerHTML = this.responseText;
+      node.id = url;
+      if (this.status === 200) {
+        node.innerHTML = this.responseText;
+      } else {
+        node.innerHTML = "Project could not be found."
+
+      }
       document.getElementById(id).appendChild(node);
       window.history.replaceState("", "", updateUrl);
     }
@@ -32,6 +47,8 @@ function addContentToId(id, url, updateUrl) {
 
   xhttp.open("GET", url, true);
   xhttp.send();
+
+  this.requested.add(url);
 }
 
 // Todo: update with math function to change speed based on distance to target
@@ -78,17 +95,17 @@ function noRedir() {
   var links = document.getElementsByTagName("a");
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
+
       var node = e.target;
       while (!("href" in node)) {
         node = node.parentNode;
       }
 
-      console.log(node.href);
       var contentNode = document.getElementById("content");
       for (var i = 0; i < contentNode.children.length; i++) {
         var child = contentNode.children[i]
         if (child.classList.contains("adv-desc")) {
-          contentNode.removeChild(child);
+          child.style.display = "none";
         }
       }
 

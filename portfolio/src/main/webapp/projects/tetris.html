@@ -1,5 +1,28 @@
-With only a four heuristics,
-the algorithm can grow a random population of tetris organisms into a squadron of everlasting tetris
-agents in under ten generations. <br>
-The Python version is a clone of Classic Tetris for the NES and runs with pygame. The C implementation displays visuals with ncurses
-and can be run without visualization at much greater speeds.
+<div class="adv-desc">
+  <div class="container p-3">
+    <h1>Tetromaster</h1>
+    <div>
+      <div class="row">
+        <div class="project-image">
+          <img src="images/tetris.png" alt="Tetris project" width="50%">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="desc">
+            <p>
+              For each potential move we consider four heuristics: max-height, bumpiness, covered holes, and completed lines. Each
+              move is assigned a score based on our agent's weights, and the column/orientation with the highest score is selected. Initially,
+              we create a population of organisms with random weights, but each generation we select the best-performing ones to crossover,
+              creating a new generation with better weights. In under 10 generations, we can create organisms that never lose.
+            </p>
+            <p>
+              The Python version is a clone of Classic Tetris for the NES and runs using pygame. An alternative implementation in C
+              displays visuals with ncurses and can be run without visualization at much greater speeds.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
