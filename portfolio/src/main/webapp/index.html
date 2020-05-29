@@ -12,7 +12,7 @@
     <script src="script.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <!--base href="/"-->
+    <!-- base href="/" -->
   </head>
   <body>
     <navbar id="nav">
@@ -27,7 +27,12 @@
             <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('projects')">Projects</a></li>
           </ul>
           <ul class="navbar-nav ml-auto mt-2">
-            <li class="nav-item"><a class="nav-link" href="#" onclick="window.open('mailto:j.weiss@yale.edu','popup','width=600,height=600'); return false;">Contact</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="window.open('mailto:j.weiss@yale.edu','popup','width=600,height=600'); return false;">
+                <i class="fa fa-envelope-square" aria-hidden="true"></i>
+                Contact
+              </a>
+            </li>
           </ul>
         </div>
       </nav>
@@ -149,9 +154,6 @@
   </body>
 
   <script>
-    // Can't send requests to server when opened locally
-    // addNav();
     highlightProjects();
-    noRedir();
   </script>
 </html>

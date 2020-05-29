@@ -28,7 +28,7 @@ function replaceIdWithQuery(id, url) {
     }
   };
 
-  xhttp.open("GET", url, true);
+  xhttp.open("GET", url, false);
   xhttp.send();
 
   return success;
@@ -66,28 +66,48 @@ function scrollToId(id) {
 // Highlight on mouseover
 function highlightProjects() {
   var projects = document.getElementsByClassName("project");
-    var node = document.createElement("span");
-    node.classList.add("tint");
     for (var i = 0; i < projects.length; i++) {
+      var node = document.createElement("span");
+      node.classList.add("tint");
       var project = projects[i].children[0].children[0];
       project.appendChild(node);
   }
 }
 
-// Have links update the url bar without redirecting
+// Have links update the url bar and page content without redirecting
+// var homeNode = undefined;
 function noRedir() {
-  var links = document.getElementsByClassName("project-link");
+  if (!homeNode) {
+    homeNode = document.getElementById("content").cloneNode(true);
+  }
+
+  var links = document.getElementsByTagName("a");
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
       var node = e.target;
       while (!("href" in node)) {
         node = node.parentNode;
       }
-      var success = replaceIdWithQuery("content", node.href + '.html');
-      if (success) {
-        window.history.pushState("", "", node.href);
+
+      console.log(node.href);
+      // Reload contents into page
+      if (node.href === "#") {
+        window.history.replaceState("", "", "#");
+        var contentNode = document.getElementById("content");
+        contentNode.parentNode.replaceChild(homeNode, contentNode);
+        init();
+      } else if (!node.href.includes("mailto")) {
+        var success = replaceIdWithQuery("content", node.href + '.html');
+        if (success) {
+          window.history.replaceState("", "", node.href);
+        }
       }
       return false;
     }
   }
+}
+
+function init() {
+  highlightProjects();
+  // noRedir();
 }

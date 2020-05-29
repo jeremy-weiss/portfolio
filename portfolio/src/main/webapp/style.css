@@ -152,6 +152,10 @@ footer ul li div a {
 .desc {
   padding-bottom: 15px;
   padding-top: 5px;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
 @-webkit-keyframes partialFadeIn {
