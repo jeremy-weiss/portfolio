@@ -19,14 +19,20 @@ function addNav() {
 
 function replaceIdWithQuery(id, url) {
   var xhttp = new XMLHttpRequest();
-  xhttp.open("GET", url, true);
-  xhttp.send();
 
+  var success = false;
   xhttp.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       document.getElementById(id).innerHTML = this.responseText;
+      success = true;
     }
   };
+
+  xhttp.open("GET", url, false);
+  xhttp.send();
+
+  return success;
+
 }
 
 // Todo: update with math function to change speed based on distance to target
@@ -77,8 +83,10 @@ function noRedir() {
       while (!("href" in node)) {
         node = node.parentNode;
       }
-      window.history.pushState("", "", node.href);
-      replaceIdWithQuery("content", "project/tetris");
+      var success = replaceIdWithQuery("content", node.href + '.html');
+      if (success) {
+        window.history.pushState("", "", node.href);
+      }
       return false;
     }
   }

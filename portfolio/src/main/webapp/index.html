@@ -12,12 +12,27 @@
     <script src="script.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!--base href="/"-->
   </head>
   <body>
     <navbar id="nav">
-
+      <nav class="navbar navbar-expand-md border fixed-top">
+        <a class="navbar-brand" href="#" onclick=scrollToId("content")><span class="blue">Jeremy Weiss</span></a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-target="#navbar" data-toggle="collapse" type="button">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav mr-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('bio')">About Me</a></li>
+            <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('projects')">Projects</a></li>
+          </ul>
+          <ul class="navbar-nav ml-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="#" onclick="window.open('mailto:j.weiss@yale.edu','popup','width=600,height=600'); return false;">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
     </navbar>
-    <div class="content">
+    <div class="content" id="content">
       <div class="container p-5" id="bio">
         <div class="row">
           <div class="col" style="align-self: center;">
@@ -47,11 +62,7 @@
                 <h6 class="tags">Machine Learning</h6>
                 <h3>Tetris</h3>
                 <div class="desc">
-                  Constructed a genetic algorithm from scratch to learn how to play Tetris. With only a four heuristics,
-                  the algorithm can grow a random population of tetris organisms into a squadron of everlasting tetris
-                  agents in under ten generations. <br>
-                  The Python version is a clone of Classic Tetris for the NES and runs with pygame. The C implementation displays visuals with ncurses
-                  and can be run without visualization at much greater speeds.
+                  Constructed a genetic algorithm from scratch to learn how to play Classic Tetris.
                 </div>
                 <div class="details">
                   <strong>Details</strong>
@@ -141,7 +152,7 @@
 
   <script>
     // Can't send requests to server when opened locally
-    addNav();
+    // addNav();
     highlightProjects();
     noRedir();
   </script>
