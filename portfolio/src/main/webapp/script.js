@@ -17,22 +17,21 @@ function addNav() {
   replaceIdWithQuery("nav", "navbar.html");
 }
 
-function replaceIdWithQuery(id, url) {
+function addContentToId(id, url, updateUrl) {
   var xhttp = new XMLHttpRequest();
 
-  var success = false;
   xhttp.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
-      document.getElementById(id).innerHTML = this.responseText;
-      success = true;
+      var node = document.createElement("div");
+      node.classList.add("adv-desc")
+      node.innerHTML = this.responseText;
+      document.getElementById(id).appendChild(node);
+      window.history.replaceState("", "", updateUrl);
     }
   };
 
-  xhttp.open("GET", url, false);
+  xhttp.open("GET", url, true);
   xhttp.send();
-
-  return success;
-
 }
 
 // Todo: update with math function to change speed based on distance to target
@@ -75,12 +74,7 @@ function highlightProjects() {
 }
 
 // Have links update the url bar and page content without redirecting
-// var homeNode = undefined;
 function noRedir() {
-  if (!homeNode) {
-    homeNode = document.getElementById("content").cloneNode(true);
-  }
-
   var links = document.getElementsByTagName("a");
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
@@ -90,17 +84,22 @@ function noRedir() {
       }
 
       console.log(node.href);
-      // Reload contents into page
-      if (node.href === "#") {
-        window.history.replaceState("", "", "#");
-        var contentNode = document.getElementById("content");
-        contentNode.parentNode.replaceChild(homeNode, contentNode);
-        init();
-      } else if (!node.href.includes("mailto")) {
-        var success = replaceIdWithQuery("content", node.href + '.html');
-        if (success) {
-          window.history.replaceState("", "", node.href);
+      var contentNode = document.getElementById("content");
+      for (var i = 0; i < contentNode.children.length; i++) {
+        var child = contentNode.children[i]
+        if ("adv-desc" in child.classList) {
+          contentNode.removeChild(child);
         }
+      }
+
+      var homeNode = document.getElementById("home");
+      // Reload contents into page
+      if (node.href.includes("#")) {
+        window.history.replaceState("", "", "#");
+        homeNode.style.display = "block";
+      } else if (!node.href.includes("mailto")) {
+        homeNode.style.display = "none";
+        addContentToId("content", node.href + '.html', node.href);
       }
       return false;
     }
@@ -109,5 +108,5 @@ function noRedir() {
 
 function init() {
   highlightProjects();
-  // noRedir();
+  noRedir();
 }
