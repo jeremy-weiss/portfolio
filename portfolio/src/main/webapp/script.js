@@ -28,7 +28,7 @@ function replaceIdWithQuery(id, url) {
     }
   };
 
-  xhttp.open("GET", url, false);
+  xhttp.open("GET", url, true);
   xhttp.send();
 
   return success;
