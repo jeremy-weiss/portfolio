@@ -22,8 +22,8 @@ function addContentToId(id, url, updateUrl) {
     this.requested = new Set();
   }
 
-  if (url in this.requested) {
-    document.getElementById(url).style.display = "block";
+  if (this.requested.has(updateUrl)) {
+    document.getElementById(updateUrl).style.display = "block";
     return;
   }
 
@@ -33,7 +33,7 @@ function addContentToId(id, url, updateUrl) {
     if (this.readyState === 4) {
       var node = document.createElement("div");
       node.classList.add("adv-desc")
-      node.id = url;
+      node.setAttribute("id", updateUrl);
       if (this.status === 200) {
         node.innerHTML = this.responseText;
       } else {
@@ -48,7 +48,7 @@ function addContentToId(id, url, updateUrl) {
   xhttp.open("GET", url, true);
   xhttp.send();
 
-  this.requested.add(url);
+  this.requested.add(updateUrl);
 }
 
 // Todo: update with math function to change speed based on distance to target
@@ -114,6 +114,9 @@ function noRedir() {
       if (node.href.includes("#")) {
         window.history.replaceState("", "", "#");
         homeNode.style.display = "block";
+      } else if (node.href.includes("javascript:")) {
+        homeNode.style.display = "block";
+        return true; // Want the javascript the activate
       } else if (!node.href.includes("mailto")) {
         homeNode.style.display = "none";
         addContentToId("content", node.href + '.html', node.href);
