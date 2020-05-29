@@ -87,7 +87,7 @@ function noRedir() {
       var contentNode = document.getElementById("content");
       for (var i = 0; i < contentNode.children.length; i++) {
         var child = contentNode.children[i]
-        if ("adv-desc" in child.classList) {
+        if (child.classList.contains("adv-desc")) {
           contentNode.removeChild(child);
         }
       }
