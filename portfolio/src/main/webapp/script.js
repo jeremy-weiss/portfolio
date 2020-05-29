@@ -14,14 +14,17 @@
 
 // Injects the navbar into the page
 function addNav() {
-  const navbar="navbar.html";
-  let xhttp = new XMLHttpRequest();
-  xhttp.open("GET", navbar, true);
+  replaceIdWithQuery("nav", "navbar.html");
+}
+
+function replaceIdWithQuery(id, url) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("GET", url, true);
   xhttp.send();
-  
+
   xhttp.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
-      document.getElementsByTagName("navbar")[0].innerHTML = this.responseText;
+      document.getElementById(id).innerHTML = this.responseText;
     }
   };
 }
@@ -31,14 +34,15 @@ function addNav() {
 function scrollToId(id) {
   var ele = document.getElementById(id);
   const desiredDist = 10;
-  var magnitude = 5;
-  var offset = 10;
+  var scrollMagnitude = 5;
+  var offset = 15;
 
   function scrollTo(x, y, lastTop, direction) {
     var topY = ele.getBoundingClientRect().top;
+    // Target is at the bottom of the page
     if (topY === lastTop) {
       return;
-    } else if (topY > desiredDist - magnitude + offset && topY < desiredDist + magnitude + offset) {
+    } else if (topY > desiredDist - scrollMagnitude + offset && topY < desiredDist + scrollMagnitude + offset) {
       window.scroll(x, y + desiredDist - topY - offset);
       return;
     }
@@ -46,9 +50,9 @@ function scrollToId(id) {
     setTimeout(function() {scrollTo(x, y + direction, topY, direction)}, 5);
   }
 
-  var direction = magnitude;
+  var direction = scrollMagnitude;
   if (ele.getBoundingClientRect().top < desiredDist) {
-    direction = -magnitude;
+    direction = -scrollMagnitude;
   }
   scrollTo(window.scrollX, window.scrollY, 0, direction);
 }
@@ -59,18 +63,23 @@ function highlightProjects() {
     var node = document.createElement("span");
     node.classList.add("tint");
     for (var i = 0; i < projects.length; i++) {
-      var project = projects[i];
+      var project = projects[i].children[0].children[0];
       project.appendChild(node);
   }
 }
 
 // Have links update the url bar without redirecting
 function noRedir() {
-  var links = document.getElementsByTagName("a");
+  var links = document.getElementsByClassName("project-link");
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
-        window.history.pushState("", "", e.target.href);
-        return false;
+      var node = e.target;
+      while (!("href" in node)) {
+        node = node.parentNode;
+      }
+      window.history.pushState("", "", node.href);
+      replaceIdWithQuery("content", "project/tetris");
+      return false;
     }
   }
 }
