@@ -126,15 +126,38 @@ function noRedir() {
   }
 }
 
-function init() {
-  highlightProjects();
-  noRedir();
-
-  window.onload = fetchAndReplace("/data", "request");
-}
-
 function fetchAndReplace(url, id) {
   fetch(url).then(response => response.text()).then(text => {
     document.getElementById(id).innerText = text;
   });
+}
+
+function enterNoSubmit(cls) {
+  var nodes = document.getElementsByClassName(cls);
+
+  // Function can only be called once
+  this.numToForm = nodes;
+  this.formToNum = {};
+
+  for (var i = 0; i < nodes.length; i++) {
+    var node = nodes[i];
+    formToNum[node.id] = i;
+    node.addEventListener("keydown", e => {
+      // Return key
+      if (e.keyCode === 13) {
+        e.preventDefault();
+        var num = formToNum[e.target.id];
+        if (num + 1 < Object.keys(this.formToNum).length) {
+          this.numToForm[num + 1].focus();
+        }
+      }
+    });
+  }
+}
+
+function init() {
+  highlightProjects();
+  noRedir();
+  enterNoSubmit("noSubmit");
+  window.onload = fetchAndReplace("/data", "request");
 }
