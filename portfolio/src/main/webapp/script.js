@@ -14,16 +14,41 @@
 
 // Injects the navbar into the page
 function addNav() {
-  const navbar="navbar.html";
-  let xhttp = new XMLHttpRequest();
-  xhttp.open("GET", navbar, true);
-  xhttp.send();
-  
+  replaceIdWithQuery("nav", "navbar.html");
+}
+
+function addContentToId(id, url, updateUrl) {
+  if (!this.requested) {
+    this.requested = new Set();
+  }
+
+  if (this.requested.has(updateUrl)) {
+    document.getElementById(updateUrl).style.display = "block";
+    return;
+  }
+
+  var xhttp = new XMLHttpRequest();
+
   xhttp.onreadystatechange = function() {
-    if (this.readyState === 4 && this.status === 200) {
-      document.getElementsByTagName("navbar")[0].innerHTML = this.responseText;
+    if (this.readyState === 4) {
+      var node = document.createElement("div");
+      node.classList.add("adv-desc")
+      node.setAttribute("id", updateUrl);
+      if (this.status === 200) {
+        node.innerHTML = this.responseText;
+      } else {
+        node.innerHTML = "Project could not be found."
+
+      }
+      document.getElementById(id).appendChild(node);
+      window.history.replaceState("", "", updateUrl);
     }
   };
+
+  xhttp.open("GET", url, true);
+  xhttp.send();
+
+  this.requested.add(updateUrl);
 }
 
 // Todo: update with math function to change speed based on distance to target
@@ -31,14 +56,15 @@ function addNav() {
 function scrollToId(id) {
   var ele = document.getElementById(id);
   const desiredDist = 10;
-  var magnitude = 5;
-  var offset = 10;
+  var scrollMagnitude = 5;
+  var offset = 15;
 
   function scrollTo(x, y, lastTop, direction) {
     var topY = ele.getBoundingClientRect().top;
+    // Target is at the bottom of the page
     if (topY === lastTop) {
       return;
-    } else if (topY > desiredDist - magnitude + offset && topY < desiredDist + magnitude + offset) {
+    } else if (topY > desiredDist - scrollMagnitude + offset && topY < desiredDist + scrollMagnitude + offset) {
       window.scroll(x, y + desiredDist - topY - offset);
       return;
     }
@@ -46,9 +72,9 @@ function scrollToId(id) {
     setTimeout(function() {scrollTo(x, y + direction, topY, direction)}, 5);
   }
 
-  var direction = magnitude;
+  var direction = scrollMagnitude;
   if (ele.getBoundingClientRect().top < desiredDist) {
-    direction = -magnitude;
+    direction = -scrollMagnitude;
   }
   scrollTo(window.scrollX, window.scrollY, 0, direction);
 }
@@ -56,21 +82,51 @@ function scrollToId(id) {
 // Highlight on mouseover
 function highlightProjects() {
   var projects = document.getElementsByClassName("project");
-    var node = document.createElement("span");
-    node.classList.add("tint");
     for (var i = 0; i < projects.length; i++) {
-      var project = projects[i];
+      var node = document.createElement("span");
+      node.classList.add("tint");
+      var project = projects[i].children[0].children[0];
       project.appendChild(node);
   }
 }
 
-// Have links update the url bar without redirecting
+// Have links update the url bar and page content without redirecting
 function noRedir() {
   var links = document.getElementsByTagName("a");
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
-        window.history.pushState("", "", e.target.href);
-        return false;
+
+      var node = e.target;
+      while (!("href" in node)) {
+        node = node.parentNode;
+      }
+
+      var contentNode = document.getElementById("content");
+      for (var i = 0; i < contentNode.children.length; i++) {
+        var child = contentNode.children[i]
+        if (child.classList.contains("adv-desc")) {
+          child.style.display = "none";
+        }
+      }
+
+      var homeNode = document.getElementById("home");
+      // Reload contents into page
+      if (node.href.includes("#")) {
+        window.history.replaceState("", "", "#");
+        homeNode.style.display = "block";
+      } else if (node.href.includes("javascript:")) {
+        homeNode.style.display = "block";
+        return true; // Want the javascript the activate
+      } else if (!node.href.includes("mailto")) {
+        homeNode.style.display = "none";
+        addContentToId("content", node.href + '.html', node.href);
+      }
+      return false;
     }
   }
+}
+
+function init() {
+  highlightProjects();
+  noRedir();
 }
