@@ -129,4 +129,12 @@ function noRedir() {
 function init() {
   highlightProjects();
   noRedir();
+
+  window.onload = fetchAndReplace("/data", "request");
+}
+
+function fetchAndReplace(url, id) {
+  fetch(url).then(response => response.text()).then(text => {
+    document.getElementById(id).innerText = text;
+  });
 }
