@@ -14,6 +14,13 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -23,19 +30,42 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/data")
+@WebServlet("/comment")
 public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    ArrayList<String> comments = new ArrayList<String>();
-    comments.add("Comment number 1!");
-    comments.add("Comment number 2!");
-    comments.add("Comment number 3!");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ArrayList<Entity> comments = new ArrayList<Entity>();
 
+    Query query = new Query("Comment").addSort("time", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    
+    // Limit 10 comments per "comment page"
     Gson gson = new Gson();
-    String json = gson.toJson(comments);
+    String json = gson.toJson(results.asList(FetchOptions.Builder.withLimit(10)));
+
     response.setContentType("application/json;");
     response.getWriter().println(json);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    String titleText = request.getParameter("title");
+    String nameText = request.getParameter("name");
+    String commentText = request.getParameter("newComment");
+
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("title", titleText);
+    commentEntity.setProperty("name", nameText);
+    commentEntity.setProperty("comment", commentText);
+    commentEntity.setProperty("time", System.currentTimeMillis());
+
+    datastore.put(commentEntity);
+
+    response.setContentType("text/html");
+    response.getWriter().println(commentEntity);
   }
 }
