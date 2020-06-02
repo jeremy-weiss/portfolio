@@ -27,19 +27,19 @@ function addContentToId(id, url, updateUrl) {
     return;
   }
 
+  const okResponse = 200;
   var xhttp = new XMLHttpRequest();
-
   xhttp.onreadystatechange = function() {
-    if (this.readyState === 4) {
+    if (this.readyState === XMLHttpRequest.DONE) {
       var node = document.createElement("div");
       node.classList.add("adv-desc")
       node.setAttribute("id", updateUrl);
-      if (this.status === 200) {
+      if (this.status === okResponse) {
         node.innerHTML = this.responseText;
       } else {
         node.innerHTML = "Project could not be found."
-
       }
+
       document.getElementById(id).appendChild(node);
       window.history.replaceState("", "", updateUrl);
     }
