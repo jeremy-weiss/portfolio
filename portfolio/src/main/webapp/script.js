@@ -12,11 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Injects the navbar into the page
-function addNav() {
-  replaceIdWithQuery("nav", "navbar.html");
-}
-
 function addContentToId(id, url, updateUrl) {
   if (!this.requested) {
     this.requested = new Set();
