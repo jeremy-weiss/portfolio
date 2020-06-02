@@ -141,12 +141,12 @@ function enterNoSubmit(cls) {
 
   for (var i = 0; i < nodes.length; i++) {
     var node = nodes[i];
-    formToNum[node.id] = i;
+    formToNum[node.name] = i;
     node.addEventListener("keydown", e => {
       // Return key
       if (e.keyCode === 13) {
         e.preventDefault();
-        var num = formToNum[e.target.id];
+        var num = formToNum[e.target.name];
         if (num + 1 < Object.keys(this.formToNum).length) {
           this.numToForm[num + 1].focus();
         }
@@ -159,5 +159,5 @@ function init() {
   highlightProjects();
   noRedir();
   enterNoSubmit("noSubmit");
-  window.onload = fetchAndReplace("/data", "request");
+  window.onload = fetchAndReplace("/comment", "request");
 }
