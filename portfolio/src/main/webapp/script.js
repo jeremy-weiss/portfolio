@@ -17,22 +17,38 @@ function addNav() {
   replaceIdWithQuery("nav", "navbar.html");
 }
 
-function replaceIdWithQuery(id, url) {
+function addContentToId(id, url, updateUrl) {
+  if (!this.requested) {
+    this.requested = new Set();
+  }
+
+  if (this.requested.has(updateUrl)) {
+    document.getElementById(updateUrl).style.display = "block";
+    return;
+  }
+
   var xhttp = new XMLHttpRequest();
 
-  var success = false;
   xhttp.onreadystatechange = function() {
-    if (this.readyState === 4 && this.status === 200) {
-      document.getElementById(id).innerHTML = this.responseText;
-      success = true;
+    if (this.readyState === 4) {
+      var node = document.createElement("div");
+      node.classList.add("adv-desc")
+      node.setAttribute("id", updateUrl);
+      if (this.status === 200) {
+        node.innerHTML = this.responseText;
+      } else {
+        node.innerHTML = "Project could not be found."
+
+      }
+      document.getElementById(id).appendChild(node);
+      window.history.replaceState("", "", updateUrl);
     }
   };
 
   xhttp.open("GET", url, true);
   xhttp.send();
 
-  return success;
-
+  this.requested.add(updateUrl);
 }
 
 // Todo: update with math function to change speed based on distance to target
@@ -66,28 +82,51 @@ function scrollToId(id) {
 // Highlight on mouseover
 function highlightProjects() {
   var projects = document.getElementsByClassName("project");
-    var node = document.createElement("span");
-    node.classList.add("tint");
     for (var i = 0; i < projects.length; i++) {
+      var node = document.createElement("span");
+      node.classList.add("tint");
       var project = projects[i].children[0].children[0];
       project.appendChild(node);
   }
 }
 
-// Have links update the url bar without redirecting
+// Have links update the url bar and page content without redirecting
 function noRedir() {
-  var links = document.getElementsByClassName("project-link");
+  var links = document.getElementsByTagName("a");
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
+
       var node = e.target;
       while (!("href" in node)) {
         node = node.parentNode;
       }
-      var success = replaceIdWithQuery("content", node.href + '.html');
-      if (success) {
-        window.history.pushState("", "", node.href);
+
+      var contentNode = document.getElementById("content");
+      for (var i = 0; i < contentNode.children.length; i++) {
+        var child = contentNode.children[i]
+        if (child.classList.contains("adv-desc")) {
+          child.style.display = "none";
+        }
+      }
+
+      var homeNode = document.getElementById("home");
+      // Reload contents into page
+      if (node.href.includes("#")) {
+        window.history.replaceState("", "", "#");
+        homeNode.style.display = "block";
+      } else if (node.href.includes("javascript:")) {
+        homeNode.style.display = "block";
+        return true; // Want the javascript the activate
+      } else if (!node.href.includes("mailto")) {
+        homeNode.style.display = "none";
+        addContentToId("content", node.href + '.html', node.href);
       }
       return false;
     }
   }
+}
+
+function init() {
+  highlightProjects();
+  noRedir();
 }

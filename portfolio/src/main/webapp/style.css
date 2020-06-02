@@ -1,3 +1,30 @@
+.adv-desc {
+  margin-top: 60px;
+}
+
+.adv-desc h1 {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.adv-desc .container {
+  top: 100px;
+  border: 1px solid #ccc;
+  height: auto;
+  padding-bottom: 0px;
+}
+
+.adv-desc .project-image {
+  align-self: center;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.adv-desc .desc {
+  position: relative;
+  padding-bottom: 0px;
+}
+
 body {
   display: flex;
   min-height: 100vh;
@@ -152,6 +179,10 @@ footer ul li div a {
 .desc {
   padding-bottom: 15px;
   padding-top: 5px;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
 @-webkit-keyframes partialFadeIn {

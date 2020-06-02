@@ -12,7 +12,7 @@
     <script src="script.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <!--base href="/"-->
+    <base href="/">
   </head>
   <body>
     <navbar id="nav">
@@ -27,95 +27,98 @@
             <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('projects')">Projects</a></li>
           </ul>
           <ul class="navbar-nav ml-auto mt-2">
-            <li class="nav-item"><a class="nav-link" href="#" onclick="window.open('mailto:j.weiss@yale.edu','popup','width=600,height=600'); return false;">Contact</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="window.open('mailto:j.weiss@yale.edu','popup','width=600,height=600'); return false;">
+                <i class="fa fa-envelope-square" aria-hidden="true"></i>
+                Contact
+              </a>
+            </li>
           </ul>
         </div>
       </nav>
     </navbar>
     <div class="content" id="content">
-      <div class="container p-5" id="bio">
-        <div class="row">
-          <div class="col" style="align-self: center;">
-            <img src="images/jeremy.jpg" style="max-width: 100%; object-fit: contain;">
-          </div>
-          <div class="col" style="align-self: center;">
-            <h1><strong>About Me</strong></h1>
-            <p>
-              I'm Jeremy, a junior at Yale University where I study Computer Science and Mathematics.
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tincidunt est ac risus pharetra rhoncus.
-              Vivamus lobortis nunc sit amet varius scelerisque. Nulla ultricies nunc non orci placerat malesuada.
-              Quisque aliquet erat metus, a rutrum nunc lacinia a. Vestibulum elementum ullamcorper arcu, eu consectetur lacus egestas quis.
-              Nulla a justo quis enim fringilla pellentesque. Aenean congue hendrerit dignissim. Morbi id commodo sapien, vitae ultrices lectus.
-              Curabitur eleifend dui a faucibus dictum.
-            </p>
+      <div id="home">
+        <div class="container p-5" id="bio">
+          <div class="row">
+            <div class="col" style="align-self: center;">
+              <img src="images/jeremy.jpg" style="max-width: 100%; object-fit: contain;">
+            </div>
+            <div class="col" style="align-self: center;">
+              <h1><strong>About Me</strong></h1>
+              <p>
+                Hey! I'm Jeremy, a junior at Yale University where I study Computer Science and Mathematics.
+                My interests lie in primarily in algorithm design, but my love for computer science has taken me in many directions.
+                When I'm not coding or studying, I'm practicing the piano, probably Liszt or Rachmaninoff, but I have been known to make the
+                occasional attempt at jazz.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="container p-3" id="projects">
-        <h1>Projects</h1>
-        <div class="project">
-          <a class="project-link" href="projects/tetris">
-            <div class="row">
-              <div class="col">
-                <h6 class="tags">Machine Learning</h6>
-                <h3>Tetris</h3>
-                <div class="desc">
-                  Constructed a genetic algorithm from scratch to learn how to play Classic Tetris.
+        <div class="container p-3" id="projects">
+          <h1>Projects</h1>
+          <div class="project">
+            <a class="project-link" href="projects/tetris">
+              <div class="row">
+                <div class="col">
+                  <h6 class="tags">Machine Learning</h6>
+                  <h3>Tetris</h3>
+                  <div class="desc">
+                    Constructed a genetic algorithm from scratch to learn Classic Tetris.
+                  </div>
+                  <div class="details">
+                    <strong>Details</strong>
+                    <div class="arrow">→</div>
+                  </div>
                 </div>
-                <div class="details">
-                  <strong>Details</strong>
-                  <div class="arrow">→</div>
-                </div>
-              </div>
-              <div class="col-8 project-image">
-                <img src="images/tetris.png" alt="Tetris project">
-              </div>
-            </div>
-          </a>
-        </div>
-        <div class="project">
-          <a class="project-link" href="#">
-            <div class="row">
-              <div class="col">
-                <h6 class="tags">Machine Learning, NLP</h6>
-                <h3>ESPRIT</h3>
-                <div class="desc">
-                  Worked as an undergraduate researcher for Language Information and Learning at Yale (LILY) where I was part
-                  of the ESPRIT team. We attempted to create a physical reasoning learning agent using Facebook's PHYRE
-                  project.
-                </div>
-                <div class="details">
-                  <strong>Details</strong>
-                  <div class="arrow">→</div>
+                <div class="col-8 project-image">
+                  <img src="images/tetris.png" alt="Tetris project">
                 </div>
               </div>
-              <div class="col-8 project-image">
-                <img src="images/phyre.jpg" alt="ESPRIT project">
-              </div>
-            </div>
-          </a>
-        </div>
-        <div class="project">
-          <a class="project-link" href="https://yalecarillon.org">
-            <div class="row">
-              <div class="col">
-                <h6 class="tags">Web Development</h6>
-                <h3>YUGC</h3>
-                <div class="desc">
-                  Webmaster for the Yale University Guild of Carillonneurs.
+            </a>
+          </div>
+          <div class="project">
+            <a class="project-link" href="#">
+              <div class="row">
+                <div class="col">
+                  <h6 class="tags">Machine Learning, NLP</h6>
+                  <h3>ESPRIT</h3>
+                  <div class="desc">
+                    Worked as an undergraduate researcher for Language Information and Learning at Yale (LILY) where I was part
+                    of the ESPRIT team. We attempted to create a physical reasoning learning agent using Facebook's PHYRE
+                    project.
+                  </div>
+                  <div class="details">
+                    <strong>Details</strong>
+                    <div class="arrow">→</div>
+                  </div>
                 </div>
-                <div class="details">
-                  <strong>Details</strong>
-                  <div class="arrow">→</div>
+                <div class="col-8 project-image">
+                  <img src="images/phyre.jpg" alt="ESPRIT project">
                 </div>
               </div>
-              <div class="col-8 project-image">
-                <img src="images/bell.png" alt="YUGC webmaster">
+            </a>
+          </div>
+          <div class="project">
+            <a class="project-link" href="https://yalecarillon.org">
+              <div class="row">
+                <div class="col">
+                  <h6 class="tags">Web Development</h6>
+                  <h3>YUGC</h3>
+                  <div class="desc">
+                    Webmaster for the Yale University Guild of Carillonneurs.
+                  </div>
+                  <div class="details">
+                    <strong>Details</strong>
+                    <div class="arrow">→</div>
+                  </div>
+                </div>
+                <div class="col-8 project-image">
+                  <img src="images/bell.png" alt="YUGC webmaster">
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -149,9 +152,6 @@
   </body>
 
   <script>
-    // Can't send requests to server when opened locally
-    // addNav();
-    highlightProjects();
-    noRedir();
+    init();
   </script>
 </html>
