@@ -38,7 +38,6 @@
       </nav>
     </navbar>
     <div class="content" id="content">
-      <div id="request"></div>
       <div id="home">
         <div class="container p-5" id="bio">
           <div class="row">
@@ -127,21 +126,22 @@
             <div class="form-row">
               <div class="form-group col-md-6">
                 <!--label for="title">Title</label-->
-                <input type="title" class="form-control noSubmit" name="title" placeholder="Title">
+                <input type="title" class="form-control noSubmit" name="title" placeholder="Title" required>
               </div>
               <div class="form-group col-md-6">
                 <!--label for="name">Name</label-->
-                <input type="name" class="form-control noSubmit" name="name" placeholder="Your Name">
+                <input type="name" class="form-control noSubmit" name="name" placeholder="Your Name" required>
               </div>
             </div>
             <div class="form-group">
               <!--label for="body">Comment</label-->
-              <textarea type="text" class="form-control noSubmit" name="newComment" placeholder="Body"></textarea>
+              <textarea type="text" class="form-control noSubmit" name="newComment" placeholder="Body" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
       </div>
+      <div id="comments"></div>
     </div>
 
     <!-- Icons from Font Awesome https://fontawesome.com/icons -->

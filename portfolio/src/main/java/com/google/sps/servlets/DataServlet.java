@@ -27,7 +27,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import java.util.List;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/comment")
@@ -36,14 +36,16 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    ArrayList<Entity> comments = new ArrayList<Entity>();
 
     Query query = new Query("Comment").addSort("time", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    
-    // Limit 10 comments per "comment page"
+
+    // Limit comments per "comment page"
+    int numComments = Integer.parseInt(request.getParameter("num"));
+    List<Entity> comments = results.asList(FetchOptions.Builder.withLimit(numComments));
+
     Gson gson = new Gson();
-    String json = gson.toJson(results.asList(FetchOptions.Builder.withLimit(10)));
+    String json = gson.toJson(comments);
 
     response.setContentType("application/json;");
     response.getWriter().println(json);
@@ -53,12 +55,12 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    String titleText = request.getParameter("title");
+    // String titleText = request.getParameter("title");
     String nameText = request.getParameter("name");
     String commentText = request.getParameter("newComment");
 
     Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("title", titleText);
+    // commentEntity.setProperty("title", titleText);
     commentEntity.setProperty("name", nameText);
     commentEntity.setProperty("comment", commentText);
     commentEntity.setProperty("time", System.currentTimeMillis());
@@ -67,5 +69,6 @@ public class DataServlet extends HttpServlet {
 
     response.setContentType("text/html");
     response.getWriter().println(commentEntity);
+    response.sendRedirect("/#comment");
   }
 }

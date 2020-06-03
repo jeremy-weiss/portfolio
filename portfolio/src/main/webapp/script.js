@@ -121,10 +121,38 @@ function noRedir() {
   }
 }
 
-function fetchAndReplace(url, id) {
+function fetchAndReplace(url, id, replaceFunc) {
   fetch(url).then(response => response.text()).then(text => {
-    document.getElementById(id).innerText = text;
+    console.log(text);
+    replaceFunc(document.getElementById(id), text);
   });
+}
+
+function parseComments(node, text) {
+  var comments = JSON.parse(text);
+  for (var i = 0; i < comments.length; i++) {
+    var comment = comments[i];
+    var stylized = stylizeComment(comment)
+    node.appendChild(stylized);
+  }
+}
+
+function stylizeComment(commentEntity) {
+  var title = commentEntity.propertyMap.title;
+  var name = commentEntity.propertyMap.name;
+  var comment = commentEntity.propertyMap.comment;
+  var time = commentEntity.propertyMap.time;
+
+  var div = document.createElement("div");
+  div.classList.add("comment");
+  div.innerHTML = `
+                   <div class="row">
+                     <div class="col text-left">${name}</div>
+                     <div class="col text-right">${time}</div>
+                   </div>
+                   <div>${comment}</div>
+                  `
+  return div;
 }
 
 function enterNoSubmit(cls) {
@@ -155,5 +183,5 @@ function init() {
   highlightProjects();
   noRedir();
   enterNoSubmit("noSubmit");
-  window.onload = fetchAndReplace("/comment", "request");
+  window.onload = fetchAndReplace("/comment?num=10", "comments", parseComments);
 }
