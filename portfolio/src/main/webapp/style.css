@@ -30,6 +30,10 @@
   margin-left: 10px;
 }
 
+.comment {
+  margin-bottom: 20px;
+}
+
 .content {
   background-color: white;
   color: black;

@@ -16,7 +16,7 @@
   </head>
   <body>
     <navbar id="nav">
-      <nav class="navbar navbar-expand-md border fixed-top">
+      <nav class="navbar navbar-expand-md border fixed-top" aria-label="Navigate">
         <a class="navbar-brand" href="#" onclick=scrollToId("content")><span class="blue">Jeremy Weiss</span></a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-target="#navbar" data-toggle="collapse" type="button">
           <span class="navbar-toggler-icon"></span>
@@ -25,6 +25,7 @@
           <ul class="navbar-nav mr-auto mt-2">
             <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('bio')">About Me</a></li>
             <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('projects')">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="javascript:scrollToId('comments')">Comments</a></li>
           </ul>
           <ul class="navbar-nav ml-auto mt-2">
             <li class="nav-item">
@@ -125,20 +126,34 @@
             <h1>Comment</h1>
             <div class="form-row">
               <div class="form-group col-md-6">
-                <!--label for="title">Title</label-->
-                <input type="title" class="form-control noSubmit" name="title" placeholder="Title" required>
-              </div>
-              <div class="form-group col-md-6">
-                <!--label for="name">Name</label-->
                 <input type="name" class="form-control noSubmit" name="name" placeholder="Your Name" required>
               </div>
+              <div class="form-group col-md-6"></div>
             </div>
             <div class="form-group">
-              <!--label for="body">Comment</label-->
               <textarea type="text" class="form-control noSubmit" name="newComment" placeholder="Body" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
+        </div>
+      </div>
+      <div class="row justify-content-between">
+        <div class="col">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul>
+        </div>
+        <div class="col-1">
+          <select class="form-control">
+            <option>5</option>
+            <option>10</option>
+            <option>25</option>
+            <option>100</option>
+          </select>
         </div>
       </div>
       <div id="comments"></div>
@@ -173,6 +188,6 @@
   </body>
 
   <script>
-    init();
+    window.onload = init();
   </script>
 </html>

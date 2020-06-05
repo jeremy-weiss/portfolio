@@ -129,6 +129,7 @@ function fetchAndReplace(url, id, replaceFunc) {
 }
 
 function parseComments(node, text) {
+  node.innerHTML = "";
   var comments = JSON.parse(text);
   for (var i = 0; i < comments.length; i++) {
     var comment = comments[i];
@@ -138,19 +139,21 @@ function parseComments(node, text) {
 }
 
 function stylizeComment(commentEntity) {
-  var title = commentEntity.propertyMap.title;
+  const ms = 1000;
   var name = commentEntity.propertyMap.name;
   var comment = commentEntity.propertyMap.comment;
-  var time = commentEntity.propertyMap.time;
+  var time = new Date(commentEntity.propertyMap.time);
 
   var div = document.createElement("div");
   div.classList.add("comment");
   div.innerHTML = `
-                   <div class="row">
-                     <div class="col text-left">${name}</div>
-                     <div class="col text-right">${time}</div>
+                   <div class="container border">
+                     <div class="row">
+                       <div class="col text-left">${name}</div>
+                       <div class="col text-right">${time}</div>
+                     </div>
+                     <div class="row">${comment}</div>
                    </div>
-                   <div>${comment}</div>
                   `
   return div;
 }
@@ -179,9 +182,23 @@ function enterNoSubmit(cls) {
   }
 }
 
+function deleteComments() {
+  fetch("delete-comment", {method: "POST"}).then(
+      fetchAndReplace("/comment?num=10", "comments", parseComments)
+  )
+}
+
+function formatComments() {
+  document.getElementsByTagName("select")[0].addEventListener('change', e => {
+    console.log(`/comment?num=${e.target.value}`);
+    fetchAndReplace(`/comment?num=${e.target.value}`, "comments", parseComments);
+  })
+}
+
 function init() {
   highlightProjects();
   noRedir();
   enterNoSubmit("noSubmit");
-  window.onload = fetchAndReplace("/comment?num=10", "comments", parseComments);
+  fetchAndReplace("/comment?num=10", "comments", parseComments);
+  formatComments();
 }
