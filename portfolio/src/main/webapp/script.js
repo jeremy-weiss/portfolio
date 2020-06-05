@@ -18,7 +18,7 @@ function addContentToId(id, url, updateUrl) {
   }
 
   if (this.requested.has(updateUrl)) {
-    document.getElementById(updateUrl).style.display = "block";
+    document.getElementById(updateUrl).style.display = 'block';
     return;
   }
 
@@ -26,21 +26,21 @@ function addContentToId(id, url, updateUrl) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState === XMLHttpRequest.DONE) {
-      var node = document.createElement("div");
-      node.classList.add("adv-desc")
-      node.setAttribute("id", updateUrl);
+      var node = document.createElement('div');
+      node.classList.add('adv-desc')
+      node.setAttribute('id', updateUrl);
       if (this.status === okResponse) {
         node.innerHTML = this.responseText;
       } else {
-        node.innerHTML = "Project could not be found."
+        node.innerHTML = 'Project could not be found.'
       }
 
       document.getElementById(id).appendChild(node);
-      window.history.replaceState("", "", updateUrl);
+      window.history.replaceState('', '', updateUrl);
     }
   };
 
-  xhttp.open("GET", url, true);
+  xhttp.open('GET', url, true);
   xhttp.send();
 
   this.requested.add(updateUrl);
@@ -59,12 +59,16 @@ function scrollToId(id) {
     // Target is at the bottom of the page
     if (topY === lastTop) {
       return;
-    } else if (topY > desiredDist - scrollMagnitude + offset && topY < desiredDist + scrollMagnitude + offset) {
+    } else if (
+        topY > desiredDist - scrollMagnitude + offset &&
+        topY < desiredDist + scrollMagnitude + offset) {
       window.scroll(x, y + desiredDist - topY - offset);
       return;
     }
     window.scroll(x, y + direction);
-    setTimeout(function() {scrollTo(x, y + direction, topY, direction)}, 5);
+    setTimeout(function() {
+      scrollTo(x, y + direction, topY, direction)
+    }, 5);
   }
 
   var direction = scrollMagnitude;
@@ -76,45 +80,44 @@ function scrollToId(id) {
 
 // Highlight on mouseover
 function highlightProjects() {
-  var projects = document.getElementsByClassName("project");
-    for (var i = 0; i < projects.length; i++) {
-      var node = document.createElement("span");
-      node.classList.add("tint");
-      var project = projects[i].children[0].children[0];
-      project.appendChild(node);
+  var projects = document.getElementsByClassName('project');
+  for (var i = 0; i < projects.length; i++) {
+    var node = document.createElement('span');
+    node.classList.add('tint');
+    var project = projects[i].children[0].children[0];
+    project.appendChild(node);
   }
 }
 
 // Have links update the url bar and page content without redirecting
 function noRedir() {
-  var links = document.getElementsByTagName("a");
+  var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
-
       var node = e.target;
-      while (!("href" in node)) {
+      while (!('href' in node)) {
         node = node.parentNode;
       }
 
-      var contentNode = document.getElementById("content");
+      var contentNode = document.getElementById('content');
       for (var i = 0; i < contentNode.children.length; i++) {
-        var child = contentNode.children[i]
-        if (child.classList.contains("adv-desc")) {
-          child.style.display = "none";
+        var child =
+            contentNode.children[i] if (child.classList.contains('adv-desc')) {
+          child.style.display = 'none';
         }
       }
 
-      var homeNode = document.getElementById("home");
+      var homeNode = document.getElementById('home');
       // Reload contents into page
-      if (node.href.includes("#")) {
-        window.history.replaceState("", "", "#");
-        homeNode.style.display = "block";
-      } else if (node.href.includes("javascript:")) {
-        homeNode.style.display = "block";
-        return true; // Want the javascript the activate
-      } else if (!node.href.includes("mailto")) {
-        homeNode.style.display = "none";
-        addContentToId("content", node.href + '.html', node.href);
+      if (node.href.includes('#')) {
+        window.history.replaceState('', '', '#');
+        homeNode.style.display = 'block';
+      } else if (node.href.includes('javascript:')) {
+        homeNode.style.display = 'block';
+        return true;  // Want the javascript the activate
+      } else if (!node.href.includes('mailto')) {
+        homeNode.style.display = 'none';
+        addContentToId('content', node.href + '.html', node.href);
       }
       return false;
     }
@@ -129,7 +132,7 @@ function fetchAndReplace(url, id, replaceFunc) {
 }
 
 function parseComments(node, text) {
-  node.innerHTML = "";
+  node.innerHTML = '';
   var comments = JSON.parse(text);
   for (var i = 0; i < comments.length; i++) {
     var comment = comments[i];
@@ -144,8 +147,8 @@ function stylizeComment(commentEntity) {
   var comment = commentEntity.propertyMap.comment;
   var time = new Date(commentEntity.propertyMap.time);
 
-  var div = document.createElement("div");
-  div.classList.add("comment");
+  var div = document.createElement('div');
+  div.classList.add('comment');
   div.innerHTML = `
                    <div class="container border">
                      <div class="row">
@@ -169,7 +172,7 @@ function enterNoSubmit(cls) {
   for (var i = 0; i < nodes.length; i++) {
     var node = nodes[i];
     formToNum[node.name] = i;
-    node.addEventListener("keydown", e => {
+    node.addEventListener('keydown', e => {
       // Return key
       if (e.keyCode === RET) {
         e.preventDefault();
@@ -183,22 +186,23 @@ function enterNoSubmit(cls) {
 }
 
 function deleteComments() {
-  fetch("delete-comment", {method: "POST"}).then(
-      fetchAndReplace("/comment?num=10", "comments", parseComments)
-  )
+  fetch('delete-comment', {
+    method: 'POST'
+  }).then(fetchAndReplace('/comment?num=10', 'comments', parseComments))
 }
 
 function formatComments() {
-  document.getElementsByTagName("select")[0].addEventListener('change', e => {
+  document.getElementsByTagName('select')[0].addEventListener('change', e => {
     console.log(`/comment?num=${e.target.value}`);
-    fetchAndReplace(`/comment?num=${e.target.value}`, "comments", parseComments);
+    fetchAndReplace(
+        `/comment?num=${e.target.value}`, 'comments', parseComments);
   })
 }
 
 function init() {
   highlightProjects();
   noRedir();
-  enterNoSubmit("noSubmit");
-  fetchAndReplace("/comment?num=10", "comments", parseComments);
+  enterNoSubmit('noSubmit');
+  fetchAndReplace('/comment?num=10', 'comments', parseComments);
   formatComments();
 }
