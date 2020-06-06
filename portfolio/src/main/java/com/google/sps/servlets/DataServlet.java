@@ -41,11 +41,12 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     // Limit comments per "comment page"
-    int numComments = Integer.parseInt(request.getParameter("num"));
-    List<Entity> comments = results.asList(FetchOptions.Builder.withLimit(numComments));
+    int limit = Integer.parseInt(request.getParameter("num"));
+
+    CommentList commentList = new CommentList(results, limit);
 
     Gson gson = new Gson();
-    String json = gson.toJson(comments);
+    String json = gson.toJson(commentList);
 
     response.setContentType("application/json;");
     response.getWriter().println(json);
@@ -67,4 +68,15 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(commentEntity);
     response.sendRedirect("/#comment");
   }
+
+  class CommentList {
+    public int num;
+    public List<Entity> comments;
+
+    public CommentList(PreparedQuery results, int limit) {
+      num = results.asList(FetchOptions.Builder.withDefaults()).size();
+      comments = results.asList(FetchOptions.Builder.withLimit(limit));
+    }
+  }
 }
+

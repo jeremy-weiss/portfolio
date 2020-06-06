@@ -126,14 +126,14 @@ function noRedir() {
 
 function fetchAndReplace(url, id, replaceFunc) {
   fetch(url).then(response => response.text()).then(text => {
-    console.log(text);
     replaceFunc(document.getElementById(id), text);
   });
 }
 
 function parseComments(node, text) {
   node.innerHTML = '';
-  var comments = JSON.parse(text);
+  var commentEntity = JSON.parse(text);
+  var comments = commentEntity.comments;
   for (var i = 0; i < comments.length; i++) {
     var comment = comments[i];
     var stylized = stylizeComment(comment)
