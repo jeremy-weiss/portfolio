@@ -101,8 +101,8 @@ function noRedir() {
 
       var contentNode = document.getElementById('content');
       for (var i = 0; i < contentNode.children.length; i++) {
-        var child =
-            contentNode.children[i] if (child.classList.contains('adv-desc')) {
+        var child = contentNode.children[i];
+        if (child.classList.contains('adv-desc')) {
           child.style.display = 'none';
         }
       }
@@ -142,7 +142,6 @@ function parseComments(node, text) {
 }
 
 function stylizeComment(commentEntity) {
-  const ms = 1000;
   var name = commentEntity.propertyMap.name;
   var comment = commentEntity.propertyMap.comment;
   var time = new Date(commentEntity.propertyMap.time);
