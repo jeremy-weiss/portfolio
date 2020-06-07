@@ -191,11 +191,29 @@ function deleteComments() {
 }
 
 function formatComments() {
-  document.getElementsByTagName('select')[0].addEventListener('change', e => {
-    console.log(`/comment?num=${e.target.value}`);
-    fetchAndReplace(
-        `/comment?num=${e.target.value}`, 'comments', parseComments);
-  })
+  // Changes number of comments based on the select box
+  document.getElementById('select-limit').addEventListener('change', e => {
+    fetchAndReplace(`/comment?num=${e.target.value}`, 'comments', parseComments);
+    // Calculates number of pages necessary
+    fetchAndReplace('comment?num=0', 'pagination', paginate);
+  });
+
+  fetchAndReplace('comment?num=0', 'pagination', paginate);
+}
+
+function paginate(node, comments) {
+  var commentEntity = JSON.parse(comments);
+  var numComments = commentEntity.num;
+  var perPage = parseInt(document.getElementById('select-limit').value);
+  var numPages = Math.floor((numComments + perPage - 1) / perPage);
+
+  var pageHTML = '<li class="page-item"><a class="page-link" href="#">Previous</a></li>';
+  for (var i = 1; i <= numPages; i++) {
+    pageHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`;
+  }
+  pageHTML += '<li class="page-item"><a class="page-link" href="#">Next</a></li>';
+
+  node.innerHTML = pageHTML;
 }
 
 function init() {
