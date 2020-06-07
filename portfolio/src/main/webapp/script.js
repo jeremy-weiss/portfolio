@@ -12,18 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Injects the navbar into the page
-function addNav() {
-  replaceIdWithQuery("nav", "navbar.html");
-}
-
 function addContentToId(id, url, updateUrl) {
   if (!this.requested) {
     this.requested = new Set();
   }
 
   if (this.requested.has(updateUrl)) {
-    document.getElementById(updateUrl).style.display = "block";
+    document.getElementById(updateUrl).style.display = 'block';
     return;
   }
 
@@ -31,21 +26,21 @@ function addContentToId(id, url, updateUrl) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState === XMLHttpRequest.DONE) {
-      var node = document.createElement("div");
-      node.classList.add("adv-desc")
-      node.setAttribute("id", updateUrl);
+      var node = document.createElement('div');
+      node.classList.add('adv-desc')
+      node.setAttribute('id', updateUrl);
       if (this.status === okResponse) {
         node.innerHTML = this.responseText;
       } else {
-        node.innerHTML = "Project could not be found."
+        node.innerHTML = 'Project could not be found.'
       }
 
       document.getElementById(id).appendChild(node);
-      window.history.replaceState("", "", updateUrl);
+      window.history.replaceState('', '', updateUrl);
     }
   };
 
-  xhttp.open("GET", url, true);
+  xhttp.open('GET', url, true);
   xhttp.send();
 
   this.requested.add(updateUrl);
@@ -64,12 +59,16 @@ function scrollToId(id) {
     // Target is at the bottom of the page
     if (topY === lastTop) {
       return;
-    } else if (topY > desiredDist - scrollMagnitude + offset && topY < desiredDist + scrollMagnitude + offset) {
+    } else if (
+        topY > desiredDist - scrollMagnitude + offset &&
+        topY < desiredDist + scrollMagnitude + offset) {
       window.scroll(x, y + desiredDist - topY - offset);
       return;
     }
     window.scroll(x, y + direction);
-    setTimeout(function() {scrollTo(x, y + direction, topY, direction)}, 5);
+    setTimeout(function() {
+      scrollTo(x, y + direction, topY, direction)
+    }, 5);
   }
 
   var direction = scrollMagnitude;
@@ -81,55 +80,84 @@ function scrollToId(id) {
 
 // Highlight on mouseover
 function highlightProjects() {
-  var projects = document.getElementsByClassName("project");
-    for (var i = 0; i < projects.length; i++) {
-      var node = document.createElement("span");
-      node.classList.add("tint");
-      var project = projects[i].children[0].children[0];
-      project.appendChild(node);
+  var projects = document.getElementsByClassName('project');
+  for (var i = 0; i < projects.length; i++) {
+    var node = document.createElement('span');
+    node.classList.add('tint');
+    var project = projects[i].children[0].children[0];
+    project.appendChild(node);
   }
 }
 
 // Have links update the url bar and page content without redirecting
 function noRedir() {
-  var links = document.getElementsByTagName("a");
+  var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
     links[i].onclick = function(e) {
-
       var node = e.target;
-      while (!("href" in node)) {
+      while (!('href' in node)) {
         node = node.parentNode;
       }
 
-      var contentNode = document.getElementById("content");
+      var contentNode = document.getElementById('content');
       for (var i = 0; i < contentNode.children.length; i++) {
-        var child = contentNode.children[i]
-        if (child.classList.contains("adv-desc")) {
-          child.style.display = "none";
+        var child = contentNode.children[i];
+        if (child.classList.contains('adv-desc')) {
+          child.style.display = 'none';
         }
       }
 
-      var homeNode = document.getElementById("home");
+      var homeNode = document.getElementById('home');
       // Reload contents into page
-      if (node.href.includes("#")) {
-        window.history.replaceState("", "", "#");
-        homeNode.style.display = "block";
-      } else if (node.href.includes("javascript:")) {
-        homeNode.style.display = "block";
-        return true; // Want the javascript the activate
-      } else if (!node.href.includes("mailto")) {
-        homeNode.style.display = "none";
-        addContentToId("content", node.href + '.html', node.href);
+      if (node.href.includes('#')) {
+        window.history.replaceState('', '', '#');
+        homeNode.style.display = 'block';
+      } else if (node.href.includes('javascript:')) {
+        homeNode.style.display = 'block';
+        return true;  // Want the javascript the activate
+      } else if (!node.href.includes('mailto')) {
+        homeNode.style.display = 'none';
+        addContentToId('content', node.href + '.html', node.href);
       }
       return false;
     }
   }
 }
 
-function fetchAndReplace(url, id) {
+function fetchAndReplace(url, id, replaceFunc) {
   fetch(url).then(response => response.text()).then(text => {
-    document.getElementById(id).innerText = text;
+    console.log(text);
+    replaceFunc(document.getElementById(id), text);
   });
+}
+
+function parseComments(node, text) {
+  node.innerHTML = '';
+  var comments = JSON.parse(text);
+  for (var i = 0; i < comments.length; i++) {
+    var comment = comments[i];
+    var stylized = stylizeComment(comment)
+    node.appendChild(stylized);
+  }
+}
+
+function stylizeComment(commentEntity) {
+  var name = commentEntity.propertyMap.name;
+  var comment = commentEntity.propertyMap.comment;
+  var time = new Date(commentEntity.propertyMap.time);
+
+  var div = document.createElement('div');
+  div.classList.add('comment');
+  div.innerHTML = `
+                   <div class="container border">
+                     <div class="row">
+                       <div class="col text-left">${name}</div>
+                       <div class="col text-right">${time}</div>
+                     </div>
+                     <div class="row">${comment}</div>
+                   </div>
+                  `
+  return div;
 }
 
 function enterNoSubmit(cls) {
@@ -139,14 +167,15 @@ function enterNoSubmit(cls) {
   this.numToForm = nodes;
   this.formToNum = {};
 
+  const RET = 13
   for (var i = 0; i < nodes.length; i++) {
     var node = nodes[i];
-    formToNum[node.id] = i;
-    node.addEventListener("keydown", e => {
+    formToNum[node.name] = i;
+    node.addEventListener('keydown', e => {
       // Return key
-      if (e.keyCode === 13) {
+      if (e.keyCode === RET) {
         e.preventDefault();
-        var num = formToNum[e.target.id];
+        var num = formToNum[e.target.name];
         if (num + 1 < Object.keys(this.formToNum).length) {
           this.numToForm[num + 1].focus();
         }
@@ -155,9 +184,24 @@ function enterNoSubmit(cls) {
   }
 }
 
+function deleteComments() {
+  fetch('delete-comment', {
+    method: 'POST'
+  }).then(fetchAndReplace('/comment?num=10', 'comments', parseComments))
+}
+
+function formatComments() {
+  document.getElementsByTagName('select')[0].addEventListener('change', e => {
+    console.log(`/comment?num=${e.target.value}`);
+    fetchAndReplace(
+        `/comment?num=${e.target.value}`, 'comments', parseComments);
+  })
+}
+
 function init() {
   highlightProjects();
   noRedir();
-  enterNoSubmit("noSubmit");
-  window.onload = fetchAndReplace("/data", "request");
+  enterNoSubmit('noSubmit');
+  fetchAndReplace('/comment?num=10', 'comments', parseComments);
+  formatComments();
 }

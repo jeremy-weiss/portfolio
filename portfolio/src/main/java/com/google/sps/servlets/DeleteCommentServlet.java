@@ -29,42 +29,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-// Servlet that adds comments to the Datastore db
-@WebServlet("/comment")
-public class DataServlet extends HttpServlet {
+// Servlet that deletes all the comments in the db
+@WebServlet("/delete-comment")
+public class DeleteCommentServlet extends HttpServlet {
 
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Comment").addSort("time", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
-
-    // Limit comments per "comment page"
-    int numComments = Integer.parseInt(request.getParameter("num"));
-    List<Entity> comments = results.asList(FetchOptions.Builder.withLimit(numComments));
-
-    Gson gson = new Gson();
-    String json = gson.toJson(comments);
-
-    response.setContentType("application/json;");
-    response.getWriter().println(json);
-  }
-
-  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String nameText = request.getParameter("name");
-    String commentText = request.getParameter("newComment");
-
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("name", nameText);
-    commentEntity.setProperty("comment", commentText);
-    commentEntity.setProperty("time", System.currentTimeMillis());
-
-    datastore.put(commentEntity);
-
-    response.setContentType("text/html");
-    response.getWriter().println(commentEntity);
-    response.sendRedirect("/#comment");
+    Query query = new Query("Comment");
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      datastore.delete(entity.getKey());
+    }
   }
 }
