@@ -163,7 +163,7 @@ function stylizeComment(commentEntity) {
 function enterNoSubmit(cls) {
   var nodes = document.getElementsByClassName(cls);
 
-  // Function can only be called once
+  // Function must only be called once
   this.numToForm = nodes;
   this.formToNum = {};
 
@@ -192,21 +192,23 @@ function deleteComments() {
 
 function formatComments() {
   this.page = 1;
+  this.limit = 5;
   // Changes number of comments based on the select box
   document.getElementById('select-limit').addEventListener('change', e => {
-    fetchAndReplace(`/comment?num=${e.target.value}`, 'comments', parseComments);
+    this.limit = parseInt(e.target.value);
+    fetchAndReplace(`/comment?num=${this.limit}&page=${this.page}`, 'comments', parseComments);
     // Calculates number of pages needed
     fetchAndReplace('comment?num=0', 'pagination', paginate);
   });
 
+  // Initial call
   fetchAndReplace('comment?num=0', 'pagination', paginate);
 }
 
 function paginate(pageNode, comments) {
   var commentEntity = JSON.parse(comments);
   var numComments = commentEntity.num;
-  var perPage = parseInt(document.getElementById('select-limit').value);
-  var numPages = Math.floor((numComments + perPage - 1) / perPage);
+  var numPages = Math.floor((numComments + this.limit - 1) / this.limit);
 
   var pageHTML = '<li class="page-item"><a class="page-link" id="prev" href="#">Previous</a></li>';
   for (var i = 1; i <= numPages; i++) {
@@ -219,10 +221,15 @@ function paginate(pageNode, comments) {
   var prev = pages[0];
   var next = pages[pages.length - 1];
 
-  function handlePage(e, newValue) {
-    pages[this.page].classList.remove("active");
+  function pageOnclick(e, newValue) {
     e.preventDefault();
+    if (e.target.classList.contains("disabled")) {
+      return;
+    }
+
+    pages[this.page].classList.remove("active");
     this.page = newValue;
+    fetchAndReplace(`comment?num=${this.limit}&page=${this.page}`, "comments", parseComments);
     stylePages(pageNode, numPages);
   }
 
@@ -231,12 +238,12 @@ function paginate(pageNode, comments) {
     // Adds closure for page
     (function (tmpPage) {
       page.onclick = e => {
-        handlePage(e, parseInt(tmpPage.innerText));
+        pageOnclick(e, parseInt(tmpPage.innerText));
       }
     }(page));
   }
-  prev.onclick = e => {handlePage(e, this.page - 1)};
-  next.onclick = e => {handlePage(e, this.page + 1)};
+  prev.onclick = e => {pageOnclick(e, this.page - 1)};
+  next.onclick = e => {pageOnclick(e, this.page + 1)};
 
   stylePages(pageNode, numPages);
 }
@@ -245,6 +252,8 @@ function stylePages(pageNode, numPages) {
   var pages = pageNode.children;
   var prev = pages[0];
   var next = pages[pages.length - 1];
+  prev.classList.remove("disabled");
+  next.classList.remove("disabled");
 
   if (this.page === 1) {
     prev.classList.add("disabled");
@@ -263,7 +272,7 @@ function stylePages(pageNode, numPages) {
 function init() {
   highlightProjects();
   noRedir();
-  enterNoSubmit('noSubmit');
-  fetchAndReplace('/comment?num=5', 'comments', parseComments);
+  enterNoSubmit("noSubmit");
+  fetchAndReplace("/comment?num=5", "comments", parseComments);
   formatComments();
 }
