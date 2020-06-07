@@ -17,22 +17,21 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 // Servlet that adds comments to the Datastore db
 @WebServlet("/comment")
 public class DataServlet extends HttpServlet {
-
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
@@ -45,7 +44,7 @@ public class DataServlet extends HttpServlet {
     int page;
     try {
       page = Integer.parseInt(request.getParameter("page"));
-    } catch(Exception e) {
+    } catch (Exception e) {
       page = 1;
     }
 
@@ -81,9 +80,9 @@ public class DataServlet extends HttpServlet {
 
     public CommentList(PreparedQuery results, int limit, int page) {
       num = results.asList(FetchOptions.Builder.withDefaults()).size();
-      List<Entity> allComments = results.asList(FetchOptions.Builder.withLimit(page*limit));
-      comments = allComments.subList((page-1) * limit, Math.min(page*limit, allComments.size()));
+      List<Entity> allComments = results.asList(FetchOptions.Builder.withLimit(page * limit));
+      comments =
+          allComments.subList((page - 1) * limit, Math.min(page * limit, allComments.size()));
     }
   }
 }
-
