@@ -195,14 +195,14 @@ function formatComments() {
   // Changes number of comments based on the select box
   document.getElementById('select-limit').addEventListener('change', e => {
     fetchAndReplace(`/comment?num=${e.target.value}`, 'comments', parseComments);
-    // Calculates number of pages necessary
+    // Calculates number of pages needed
     fetchAndReplace('comment?num=0', 'pagination', paginate);
   });
 
   fetchAndReplace('comment?num=0', 'pagination', paginate);
 }
 
-function paginate(node, comments) {
+function paginate(pageNode, comments) {
   var commentEntity = JSON.parse(comments);
   var numComments = commentEntity.num;
   var perPage = parseInt(document.getElementById('select-limit').value);
@@ -213,11 +213,39 @@ function paginate(node, comments) {
     pageHTML += `<li class="page-item"><a class="page-link" id="page-${i}" href="#">${i}</a></li>`;
   }
   pageHTML += '<li class="page-item"><a class="page-link" id="next" href="#">Next</a></li>';
-  node.innerHTML = pageHTML;
+  pageNode.innerHTML = pageHTML;
 
-  var pages = node.children;
+  var pages = pageNode.children;
   var prev = pages[0];
   var next = pages[pages.length - 1];
+
+  function handlePage(e, newValue) {
+    pages[this.page].classList.remove("active");
+    e.preventDefault();
+    this.page = newValue;
+    stylePages(pageNode, numPages);
+  }
+
+  for (i = 1; i < pages.length - 1; i++) {
+    var page = pages[i];
+    // Adds closure for page
+    (function (tmpPage) {
+      page.onclick = e => {
+        handlePage(e, parseInt(tmpPage.innerText));
+      }
+    }(page));
+  }
+  prev.onclick = e => {handlePage(e, this.page - 1)};
+  next.onclick = e => {handlePage(e, this.page + 1)};
+
+  stylePages(pageNode, numPages);
+}
+
+function stylePages(pageNode, numPages) {
+  var pages = pageNode.children;
+  var prev = pages[0];
+  var next = pages[pages.length - 1];
+
   if (this.page === 1) {
     prev.classList.add("disabled");
     prev.innerHTML = '<span class="page-link">Previous</span>';
@@ -227,25 +255,9 @@ function paginate(node, comments) {
     next.innerHTML = '<span class="page-link">Next</span>';
   }
 
-  for (i = 1; i < pages.length - 1; i++) {
-    var page = pages[i];
-    if (page.innerText === this.page) {
-      page.classList.add("active");
-    }
-    page.onclick = e => {
-      e.preventDefault();
-      this.page = e.target.innerText;
-    }
-  }
+  var activePage = pages[this.page];
+  activePage.classList.add("active");
 
-  prev.onclick = e => {
-    e.preventDefault();
-    this.page--;
-  }
-  next.onclick = e => {
-    e.preventDefault();
-    this.page++;
-  }
 }
 
 function init() {
