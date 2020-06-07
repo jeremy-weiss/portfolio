@@ -191,6 +191,7 @@ function deleteComments() {
 }
 
 function formatComments() {
+  this.page = 1;
   // Changes number of comments based on the select box
   document.getElementById('select-limit').addEventListener('change', e => {
     fetchAndReplace(`/comment?num=${e.target.value}`, 'comments', parseComments);
@@ -207,19 +208,50 @@ function paginate(node, comments) {
   var perPage = parseInt(document.getElementById('select-limit').value);
   var numPages = Math.floor((numComments + perPage - 1) / perPage);
 
-  var pageHTML = '<li class="page-item"><a class="page-link" href="#">Previous</a></li>';
+  var pageHTML = '<li class="page-item"><a class="page-link" id="prev" href="#">Previous</a></li>';
   for (var i = 1; i <= numPages; i++) {
-    pageHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`;
+    pageHTML += `<li class="page-item"><a class="page-link" id="page-${i}" href="#">${i}</a></li>`;
   }
-  pageHTML += '<li class="page-item"><a class="page-link" href="#">Next</a></li>';
-
+  pageHTML += '<li class="page-item"><a class="page-link" id="next" href="#">Next</a></li>';
   node.innerHTML = pageHTML;
+
+  var pages = node.children;
+  var prev = pages[0];
+  var next = pages[pages.length - 1];
+  if (this.page === 1) {
+    prev.classList.add("disabled");
+    prev.innerHTML = '<span class="page-link">Previous</span>';
+  }
+  if (this.page === numPages) {
+    next.classList.add("disabled");
+    next.innerHTML = '<span class="page-link">Next</span>';
+  }
+
+  for (i = 1; i < pages.length - 1; i++) {
+    var page = pages[i];
+    if (page.innerText === this.page) {
+      page.classList.add("active");
+    }
+    page.onclick = e => {
+      e.preventDefault();
+      this.page = e.target.innerText;
+    }
+  }
+
+  prev.onclick = e => {
+    e.preventDefault();
+    this.page--;
+  }
+  next.onclick = e => {
+    e.preventDefault();
+    this.page++;
+  }
 }
 
 function init() {
   highlightProjects();
   noRedir();
   enterNoSubmit('noSubmit');
-  fetchAndReplace('/comment?num=10', 'comments', parseComments);
+  fetchAndReplace('/comment?num=5', 'comments', parseComments);
   formatComments();
 }
