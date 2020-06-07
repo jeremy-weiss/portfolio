@@ -36,7 +36,7 @@ function addContentToId(id, url, updateUrl) {
       }
 
       document.getElementById(id).appendChild(node);
-      window.history.replaceState('', '', updateUrl);
+      window.history.pushState('', '', updateUrl);
     }
   };
 
@@ -99,6 +99,8 @@ function noRedir() {
         node = node.parentNode;
       }
 
+      var commentsContainer = document.getElementById("comments-container");
+      var commentsNode = document.getElementById("comments");
       var contentNode = document.getElementById('content');
       for (var i = 0; i < contentNode.children.length; i++) {
         var child = contentNode.children[i];
@@ -110,13 +112,19 @@ function noRedir() {
       var homeNode = document.getElementById('home');
       // Reload contents into page
       if (node.href.includes('#')) {
-        window.history.replaceState('', '', '#');
+        window.history.pushState('', '', '#');
         homeNode.style.display = 'block';
-      } else if (node.href.includes('javascript:')) {
+        commentsContainer.style.display = 'block';
+        commentsNode.style.display = 'block';
+      } else if (node.href.includes('javascript:') || node.href.includes('mailto:')) {
         homeNode.style.display = 'block';
+        commentsContainer.style.display = 'block';
+        commentsNode.style.display = 'block';
         return true;  // Want the javascript the activate
-      } else if (!node.href.includes('mailto')) {
+      } else {
         homeNode.style.display = 'none';
+        commentsNode.style.display = "none";
+        commentsContainer.style.display = "none";
         addContentToId('content', node.href + '.html', node.href);
       }
       return false;
