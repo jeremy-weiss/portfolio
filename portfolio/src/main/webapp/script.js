@@ -36,7 +36,7 @@ function addContentToId(id, url, updateUrl) {
       }
 
       document.getElementById(id).appendChild(node);
-      window.history.replaceState('', '', updateUrl);
+      window.history.pushState('', '', updateUrl);
     }
   };
 
@@ -99,6 +99,8 @@ function noRedir() {
         node = node.parentNode;
       }
 
+      var commentsContainer = document.getElementById('comments-container');
+      var commentsNode = document.getElementById('comments');
       var contentNode = document.getElementById('content');
       for (var i = 0; i < contentNode.children.length; i++) {
         var child = contentNode.children[i];
@@ -110,13 +112,20 @@ function noRedir() {
       var homeNode = document.getElementById('home');
       // Reload contents into page
       if (node.href.includes('#')) {
-        window.history.replaceState('', '', '#');
+        window.history.pushState('', '', '#');
         homeNode.style.display = 'block';
-      } else if (node.href.includes('javascript:')) {
+        commentsContainer.style.display = 'block';
+        commentsNode.style.display = 'block';
+      } else if (
+          node.href.includes('javascript:') || node.href.includes('mailto:')) {
         homeNode.style.display = 'block';
+        commentsContainer.style.display = 'block';
+        commentsNode.style.display = 'block';
         return true;  // Want the javascript the activate
-      } else if (!node.href.includes('mailto')) {
+      } else {
         homeNode.style.display = 'none';
+        commentsNode.style.display = 'none';
+        commentsContainer.style.display = 'none';
         addContentToId('content', node.href + '.html', node.href);
       }
       return false;
@@ -126,14 +135,14 @@ function noRedir() {
 
 function fetchAndReplace(url, id, replaceFunc) {
   fetch(url).then(response => response.text()).then(text => {
-    console.log(text);
     replaceFunc(document.getElementById(id), text);
   });
 }
 
 function parseComments(node, text) {
   node.innerHTML = '';
-  var comments = JSON.parse(text);
+  var commentEntity = JSON.parse(text);
+  var comments = commentEntity.comments;
   for (var i = 0; i < comments.length; i++) {
     var comment = comments[i];
     var stylized = stylizeComment(comment)
@@ -163,7 +172,7 @@ function stylizeComment(commentEntity) {
 function enterNoSubmit(cls) {
   var nodes = document.getElementsByClassName(cls);
 
-  // Function can only be called once
+  // Function must only be called once
   this.numToForm = nodes;
   this.formToNum = {};
 
@@ -191,17 +200,98 @@ function deleteComments() {
 }
 
 function formatComments() {
-  document.getElementsByTagName('select')[0].addEventListener('change', e => {
-    console.log(`/comment?num=${e.target.value}`);
+  this.page = 1;
+  this.limit = 5;
+  // Changes number of comments based on the select box
+  document.getElementById('select-limit').addEventListener('change', e => {
+    this.limit = parseInt(e.target.value);
     fetchAndReplace(
-        `/comment?num=${e.target.value}`, 'comments', parseComments);
-  })
+        `/comment?num=${this.limit}&page=${this.page}`, 'comments',
+        parseComments);
+    // Calculates number of pages needed
+    fetchAndReplace('comment?num=0', 'pagination', paginate);
+  });
+
+  // Initial call
+  fetchAndReplace('comment?num=0', 'pagination', paginate);
+}
+
+function paginate(pageNode, comments) {
+  var commentEntity = JSON.parse(comments);
+  var numComments = commentEntity.num;
+  var numPages = Math.floor((numComments + this.limit - 1) / this.limit);
+
+  var pageHTML =
+      '<li class="page-item"><a class="page-link" id="prev" href="#">Previous</a></li>';
+  for (var i = 1; i <= numPages; i++) {
+    pageHTML += `<li class="page-item"><a class="page-link" id="page-${
+        i}" href="#">${i}</a></li>`;
+  }
+  pageHTML +=
+      '<li class="page-item"><a class="page-link" id="next" href="#">Next</a></li>';
+  pageNode.innerHTML = pageHTML;
+
+  var pages = pageNode.children;
+  var prev = pages[0];
+  var next = pages[pages.length - 1];
+
+  function pageOnclick(e, newValue) {
+    e.preventDefault();
+    if (e.target.classList.contains('disabled')) {
+      return;
+    }
+
+    pages[this.page].classList.remove('active');
+    this.page = newValue;
+    fetchAndReplace(
+        `comment?num=${this.limit}&page=${this.page}`, 'comments',
+        parseComments);
+    stylePages(pageNode, numPages);
+  }
+
+  for (i = 1; i < pages.length - 1; i++) {
+    var page = pages[i];
+    // Adds closure for page
+    (function(tmpPage) {
+      page.onclick = e => {
+        pageOnclick(e, parseInt(tmpPage.innerText));
+      }
+    }(page));
+  }
+  prev.onclick = e => {
+    pageOnclick(e, this.page - 1)
+  };
+  next.onclick = e => {
+    pageOnclick(e, this.page + 1)
+  };
+
+  stylePages(pageNode, numPages);
+}
+
+function stylePages(pageNode, numPages) {
+  var pages = pageNode.children;
+  var prev = pages[0];
+  var next = pages[pages.length - 1];
+  prev.classList.remove('disabled');
+  next.classList.remove('disabled');
+
+  if (this.page === 1) {
+    prev.classList.add('disabled');
+    prev.innerHTML = '<span class="page-link">Previous</span>';
+  }
+  if (this.page === numPages) {
+    next.classList.add('disabled');
+    next.innerHTML = '<span class="page-link">Next</span>';
+  }
+
+  var activePage = pages[this.page];
+  activePage.classList.add('active');
 }
 
 function init() {
   highlightProjects();
   noRedir();
   enterNoSubmit('noSubmit');
-  fetchAndReplace('/comment?num=10', 'comments', parseComments);
+  fetchAndReplace('/comment?num=5', 'comments', parseComments);
   formatComments();
 }

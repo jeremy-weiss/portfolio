@@ -17,22 +17,21 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 // Servlet that adds comments to the Datastore db
 @WebServlet("/comment")
 public class DataServlet extends HttpServlet {
-
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
@@ -41,11 +40,18 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     // Limit comments per "comment page"
-    int numComments = Integer.parseInt(request.getParameter("num"));
-    List<Entity> comments = results.asList(FetchOptions.Builder.withLimit(numComments));
+    int limit = Integer.parseInt(request.getParameter("num"));
+    int page;
+    try {
+      page = Integer.parseInt(request.getParameter("page"));
+    } catch (Exception e) {
+      page = 1;
+    }
+
+    CommentList commentList = new CommentList(results, limit, page);
 
     Gson gson = new Gson();
-    String json = gson.toJson(comments);
+    String json = gson.toJson(commentList);
 
     response.setContentType("application/json;");
     response.getWriter().println(json);
@@ -66,5 +72,17 @@ public class DataServlet extends HttpServlet {
     response.setContentType("text/html");
     response.getWriter().println(commentEntity);
     response.sendRedirect("/#comment");
+  }
+
+  class CommentList {
+    public int num;
+    public List<Entity> comments;
+
+    public CommentList(PreparedQuery results, int limit, int page) {
+      num = results.asList(FetchOptions.Builder.withDefaults()).size();
+      List<Entity> allComments = results.asList(FetchOptions.Builder.withLimit(page * limit));
+      comments =
+          allComments.subList((page - 1) * limit, Math.min(page * limit, allComments.size()));
+    }
   }
 }
