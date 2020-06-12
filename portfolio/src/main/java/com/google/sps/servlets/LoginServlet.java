@@ -14,7 +14,14 @@
 
 package com.google.sps.servlets;
 
-import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory;
+import com.google.api.client.util.store.MemoryDataStoreFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.api.client.util.store.DataStore;
 
 import com.google.api.client.auth.oauth2.*;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
@@ -47,52 +54,51 @@ import java.io.InputStream;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-  private static AppEngineDataStoreFactory DATA_STORE_FACTORY = AppEngineDataStoreFactory.getDefaultInstance();
-  private static HttpTransport httpTransport;
-  private static JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-  private static List<String> SCOPES = Arrays.asList("https://www.googleapis.com/auth/userinfo.email");
-  private static GoogleClientSecrets clientSecrets;
-  private static String APPLICATION_NAME = "Portfolio/1.0";
-  private static GoogleAuthorizationCodeFlow flow;
-  private static String redirectUri;
-  private static Gson gson = new Gson();
+  private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private MemoryDataStoreFactory DATA_STORE_FACTORY = MemoryDataStoreFactory.getDefaultInstance();
+  private DataStore<String> emailDataStore;
+  private HttpTransport httpTransport;
+  private JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+  private List<String> SCOPES = Arrays.asList("https://www.googleapis.com/auth/userinfo.email");
+  private String emailUrl = "https://openidconnect.googleapis.com/v1/userinfo";
+  private GoogleClientSecrets clientSecrets;
+  private String APPLICATION_NAME = "Portfolio/1.0";
+  private GoogleAuthorizationCodeFlow flow;
+  private String redirectUri;
+  private Gson gson = new Gson();
+
+  public LoginServlet() {
+    try {
+          httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+          clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+                           new InputStreamReader(LoginServlet.class.getResourceAsStream("/client.json")));
+          flow = new GoogleAuthorizationCodeFlow.Builder(
+                           httpTransport, JSON_FACTORY, clientSecrets, SCOPES).setDataStoreFactory(
+                           DATA_STORE_FACTORY).build();
+          emailDataStore = DATA_STORE_FACTORY.getDataStore("Login");
+        } catch (Exception e) {
+          System.out.println(e);
+          return;
+        }
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    try {
-      httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-      clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-                       new InputStreamReader(LoginServlet.class.getResourceAsStream("/client.json")));
-      flow = new GoogleAuthorizationCodeFlow.Builder(
-                       httpTransport, JSON_FACTORY, clientSecrets, SCOPES).setDataStoreFactory(
-                       DATA_STORE_FACTORY).build();
-    } catch (Exception e) {
-      System.out.println(e);
-      return;
-    }
-
     String code = request.getParameter("code"); // Todo unique 'value' parameter as protection
     if (code != null) {
       // Successful login
       TokenResponse token = flow.newTokenRequest(code).setRedirectUri("http://localhost:8080/login").execute();
-      System.out.println(token);
-      // Credential credential = flow.createAndStoreCredential(token, <unique id>);
       Credential credential = new Credential(BearerToken.authorizationHeaderAccessMethod()).setFromTokenResponse(token);
-      System.out.println(credential);
 
-      String emailUrl = "https://openidconnect.googleapis.com/v1/userinfo";
       GenericUrl authUrl = new GenericUrl(emailUrl);
       HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
       HttpResponse authResponse = requestFactory.buildGetRequest(authUrl).execute();
-
       HashMap<String, String> authContent = gson.fromJson(streamToString(authResponse.getContent()), HashMap.class);
       String email = authContent.get("email");
 
-      if (email.equals(System.getenv("email"))) {
-        System.out.println("Welcome, Jeremy!");
-      } else {
-        System.out.println("Who're you???");
-      }
+      String sessionId = request.getSession().getId();
+      emailDataStore.set(sessionId, email);
+      response.sendRedirect("/");
 
     } else {
       // Redirect to Google oauth

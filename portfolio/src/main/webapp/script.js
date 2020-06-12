@@ -142,11 +142,16 @@ function fetchAndReplace(url, id, replaceFunc) {
 function parseComments(node, text) {
   node.innerHTML = '';
   var commentEntity = JSON.parse(text);
-  var comments = commentEntity.comments;
-  for (var i = 0; i < comments.length; i++) {
-    var comment = comments[i];
-    var stylized = stylizeComment(comment)
-    node.appendChild(stylized);
+  var numComments = commentEntity.num;
+  if (numComments === 0) {
+    document.getElementById("comments-container").remove();
+  } else {
+    var comments = commentEntity.comments;
+    for (var i = 0; i < comments.length; i++) {
+      var comment = comments[i];
+      var stylized = stylizeComment(comment)
+      node.appendChild(stylized);
+    }
   }
 }
 
@@ -219,8 +224,11 @@ function formatComments() {
 function paginate(pageNode, comments) {
   var commentEntity = JSON.parse(comments);
   var numComments = commentEntity.num;
-  var numPages = Math.floor((numComments + this.limit - 1) / this.limit);
+  if (numComments === 0) {
+    return;
+  }
 
+  var numPages = Math.floor((numComments + this.limit - 1) / this.limit);
   var pageHTML =
       '<li class="page-item"><a class="page-link" id="prev" href="#">Previous</a></li>';
   for (var i = 1; i <= numPages; i++) {

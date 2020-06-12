@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.api.client.util.store.DataStore;
+import com.google.api.client.util.store.MemoryDataStoreFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -23,37 +25,58 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 // Servlet that adds comments to the Datastore db
 @WebServlet("/comment")
 public class DataServlet extends HttpServlet {
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private MemoryDataStoreFactory memDataStore = MemoryDataStoreFactory.getDefaultInstance();
+  private DataStore<String> emailDataStore;
+  private Gson gson = new Gson();
+
+  public DataServlet() {
+    try {
+          emailDataStore = memDataStore.getDataStore("Login");
+        } catch (Exception e) {
+          System.out.println(e);
+          return;
+        }
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Comment").addSort("time", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
 
-    // Limit comments per "comment page"
-    int limit = Integer.parseInt(request.getParameter("num"));
-    int page;
-    try {
-      page = Integer.parseInt(request.getParameter("page"));
-    } catch (Exception e) {
-      page = 1;
+    CommentList commentList;
+
+    String sessionId = request.getSession().getId();
+    String email = emailDataStore.get(sessionId);
+    System.out.println(email);
+    if (email == null || !email.equals(System.getenv("email"))) {
+      commentList = new CommentList();
+    } else {
+      System.out.println("Sending comment");
+      Query query = new Query("Comment").addSort("time", SortDirection.DESCENDING);
+      PreparedQuery results = datastore.prepare(query);
+
+      // Limit comments per "comment page"
+      int limit = Integer.parseInt(request.getParameter("num"));
+      int page;
+      try {
+        page = Integer.parseInt(request.getParameter("page"));
+      } catch (Exception e) {
+        page = 1;
+      }
+
+      commentList = new CommentList(results, limit, page);
     }
 
-    CommentList commentList = new CommentList(results, limit, page);
-
-    Gson gson = new Gson();
-    String json = gson.toJson(commentList);
-
     response.setContentType("application/json;");
+    String json = gson.toJson(commentList);
     response.getWriter().println(json);
   }
 
@@ -78,10 +101,15 @@ public class DataServlet extends HttpServlet {
     public int num;
     public List<Entity> comments;
 
+    public CommentList() {
+      this.num = 0;
+      comments = null;
+    }
+
     public CommentList(PreparedQuery results, int limit, int page) {
-      num = results.asList(FetchOptions.Builder.withDefaults()).size();
+      this.num = results.asList(FetchOptions.Builder.withDefaults()).size();
       List<Entity> allComments = results.asList(FetchOptions.Builder.withLimit(page * limit));
-      comments =
+      this.comments =
           allComments.subList((page - 1) * limit, Math.min(page * limit, allComments.size()));
     }
   }
