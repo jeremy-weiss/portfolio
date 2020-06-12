@@ -25,11 +25,11 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 // Servlet that adds comments to the Datastore db
 @WebServlet("/comment")
@@ -41,16 +41,15 @@ public class DataServlet extends HttpServlet {
 
   public DataServlet() {
     try {
-          emailDataStore = memDataStore.getDataStore("Login");
-        } catch (Exception e) {
-          System.out.println(e);
-          return;
-        }
+      emailDataStore = memDataStore.getDataStore("Login");
+    } catch (Exception e) {
+      System.out.println(e);
+      return;
+    }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     CommentList commentList;
 
     String sessionId = request.getSession().getId();

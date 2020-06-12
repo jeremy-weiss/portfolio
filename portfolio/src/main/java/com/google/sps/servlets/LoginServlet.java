@@ -14,46 +14,39 @@
 
 package com.google.sps.servlets;
 
-import com.google.api.client.util.store.MemoryDataStoreFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.api.client.util.store.DataStore;
-
 import com.google.api.client.auth.oauth2.*;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-
+import com.google.api.client.util.store.DataStore;
+import com.google.api.client.util.store.MemoryDataStoreFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
-import com.google.gson.Gson;
-
+import java.util.Scanner;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.GenericUrl;
-
-import java.util.Scanner;
-import java.util.HashMap;
-import java.io.InputStream;
-
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private MemoryDataStoreFactory DATA_STORE_FACTORY = MemoryDataStoreFactory.getDefaultInstance();
   private DataStore<String> emailDataStore;
@@ -69,17 +62,18 @@ public class LoginServlet extends HttpServlet {
 
   public LoginServlet() {
     try {
-          httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-          clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-                           new InputStreamReader(LoginServlet.class.getResourceAsStream("/client.json")));
-          flow = new GoogleAuthorizationCodeFlow.Builder(
-                           httpTransport, JSON_FACTORY, clientSecrets, SCOPES).setDataStoreFactory(
-                           DATA_STORE_FACTORY).build();
-          emailDataStore = DATA_STORE_FACTORY.getDataStore("Login");
-        } catch (Exception e) {
-          System.out.println(e);
-          return;
-        }
+      httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+      clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+          new InputStreamReader(LoginServlet.class.getResourceAsStream("/client.json")));
+      flow = new GoogleAuthorizationCodeFlow
+                 .Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
+                 .setDataStoreFactory(DATA_STORE_FACTORY)
+                 .build();
+      emailDataStore = DATA_STORE_FACTORY.getDataStore("Login");
+    } catch (Exception e) {
+      System.out.println(e);
+      return;
+    }
   }
 
   @Override
@@ -87,13 +81,16 @@ public class LoginServlet extends HttpServlet {
     String code = request.getParameter("code"); // Todo unique 'value' parameter as protection
     if (code != null) {
       // Successful login
-      TokenResponse token = flow.newTokenRequest(code).setRedirectUri("http://localhost:8080/login").execute();
-      Credential credential = new Credential(BearerToken.authorizationHeaderAccessMethod()).setFromTokenResponse(token);
+      TokenResponse token =
+          flow.newTokenRequest(code).setRedirectUri("http://localhost:8080/login").execute();
+      Credential credential =
+          new Credential(BearerToken.authorizationHeaderAccessMethod()).setFromTokenResponse(token);
 
       GenericUrl authUrl = new GenericUrl(emailUrl);
       HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
       HttpResponse authResponse = requestFactory.buildGetRequest(authUrl).execute();
-      HashMap<String, String> authContent = gson.fromJson(streamToString(authResponse.getContent()), HashMap.class);
+      HashMap<String, String> authContent =
+          gson.fromJson(streamToString(authResponse.getContent()), HashMap.class);
       String email = authContent.get("email");
 
       String sessionId = request.getSession().getId();
@@ -102,7 +99,8 @@ public class LoginServlet extends HttpServlet {
 
     } else {
       // Redirect to Google oauth
-      String redirectUri = flow.newAuthorizationUrl().setRedirectUri("http://localhost:8080/login").build();
+      String redirectUri =
+          flow.newAuthorizationUrl().setRedirectUri("http://localhost:8080/login").build();
       response.sendRedirect(redirectUri);
     }
   }

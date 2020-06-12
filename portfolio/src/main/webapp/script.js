@@ -144,7 +144,7 @@ function parseComments(node, text) {
   var commentEntity = JSON.parse(text);
   var numComments = commentEntity.num;
   if (numComments === 0) {
-    document.getElementById("comments-container").remove();
+    document.getElementById('comments-container').remove();
   } else {
     var comments = commentEntity.comments;
     for (var i = 0; i < comments.length; i++) {
