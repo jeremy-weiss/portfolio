@@ -157,6 +157,7 @@ function parseComments(node, text) {
 
 function stylizeComment(commentEntity) {
   var name = commentEntity.propertyMap.name;
+  var email = commentEntity.propertyMap.email;
   var comment = commentEntity.propertyMap.comment;
   var time = new Date(commentEntity.propertyMap.time);
 
@@ -166,6 +167,7 @@ function stylizeComment(commentEntity) {
                    <div class="container border">
                      <div class="row">
                        <div class="col text-left">${name}</div>
+                       <div class="col">${email}</div>
                        <div class="col text-right">${time}</div>
                      </div>
                      <div class="row">${comment}</div>

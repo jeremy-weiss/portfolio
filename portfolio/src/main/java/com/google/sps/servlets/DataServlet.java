@@ -54,11 +54,9 @@ public class DataServlet extends HttpServlet {
 
     String sessionId = request.getSession().getId();
     String email = emailDataStore.get(sessionId);
-    System.out.println(email);
     if (email == null || !email.equals(System.getenv("email"))) {
       commentList = new CommentList();
     } else {
-      System.out.println("Sending comment");
       Query query = new Query("Comment").addSort("time", SortDirection.DESCENDING);
       PreparedQuery results = datastore.prepare(query);
 
@@ -82,10 +80,12 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String nameText = request.getParameter("name");
+    String emailText = request.getParameter("email");
     String commentText = request.getParameter("newComment");
 
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("name", nameText);
+    commentEntity.setProperty("email", emailText);
     commentEntity.setProperty("comment", commentText);
     commentEntity.setProperty("time", System.currentTimeMillis());
 
