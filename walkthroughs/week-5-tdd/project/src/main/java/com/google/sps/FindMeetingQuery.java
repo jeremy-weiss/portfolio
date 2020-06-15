@@ -14,15 +14,15 @@
 
 package com.google.sps;
 
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     Collection<String> attendees = request.getAttendees();
 
     // Find times that don't work
-    ArrayList<TimeRange> badRanges = new ArrayList<>();;
+    ArrayList<TimeRange> badRanges = new ArrayList<>();
     for (Event event : events) {
       Collection<String> eventAttendees = event.getAttendees();
       for (String attendee : attendees) {
@@ -38,11 +38,12 @@ public final class FindMeetingQuery {
     for (int i = 0; i < badRanges.size() - 1; i++) {
       TimeRange range1 = badRanges.get(i);
       TimeRange range2 = badRanges.get(i + 1);
-      // Range2 can contain range1 if they have equal start times, but that case is equivalent to overlap
+      // Range2 can contain range1 if they have equal start times, but that case is equivalent to
+      // overlap
       if (range1.overlaps(range2)) {
         if (range1.contains(range2)) {
           // Irrelevant time range
-          badRanges.set(i+1, null);
+          badRanges.set(i + 1, null);
         } else {
           // Merge overlapping
           TimeRange combined = TimeRange.fromStartEnd(range1.start(), range2.end(), false);
@@ -69,7 +70,8 @@ public final class FindMeetingQuery {
   }
 
   // Adds a time range to the collection if a meeting can be held in the specified time
-  private void addIfAvailable(Collection<TimeRange> validRanges, int startTime, int endTime, long duration) {
+  private void addIfAvailable(
+      Collection<TimeRange> validRanges, int startTime, int endTime, long duration) {
     if (endTime - startTime >= duration) {
       TimeRange validRange = TimeRange.fromStartEnd(startTime, endTime, false);
       validRanges.add(validRange);
