@@ -59,6 +59,7 @@ public class LoginServlet extends HttpServlet {
   private GoogleAuthorizationCodeFlow flow;
   private String redirectUri;
   private Gson gson = new Gson();
+  private final String loginUri = "http://localhost:8080/login";
 
   public LoginServlet() {
     try {
@@ -82,7 +83,7 @@ public class LoginServlet extends HttpServlet {
     if (code != null) {
       // Successful login
       TokenResponse token =
-          flow.newTokenRequest(code).setRedirectUri("http://localhost:8080/login").execute();
+          flow.newTokenRequest(code).setRedirectUri(loginUri).execute();
       Credential credential =
           new Credential(BearerToken.authorizationHeaderAccessMethod()).setFromTokenResponse(token);
 
@@ -100,7 +101,7 @@ public class LoginServlet extends HttpServlet {
     } else {
       // Redirect to Google oauth
       String redirectUri =
-          flow.newAuthorizationUrl().setRedirectUri("http://localhost:8080/login").build();
+          flow.newAuthorizationUrl().setRedirectUri(loginUri).build();
       response.sendRedirect(redirectUri);
     }
   }
