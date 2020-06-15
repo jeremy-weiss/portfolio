@@ -142,16 +142,22 @@ function fetchAndReplace(url, id, replaceFunc) {
 function parseComments(node, text) {
   node.innerHTML = '';
   var commentEntity = JSON.parse(text);
-  var comments = commentEntity.comments;
-  for (var i = 0; i < comments.length; i++) {
-    var comment = comments[i];
-    var stylized = stylizeComment(comment)
-    node.appendChild(stylized);
+  var numComments = commentEntity.num;
+  if (numComments === 0) {
+    document.getElementById('comments-container').remove();
+  } else {
+    var comments = commentEntity.comments;
+    for (var i = 0; i < comments.length; i++) {
+      var comment = comments[i];
+      var stylized = stylizeComment(comment)
+      node.appendChild(stylized);
+    }
   }
 }
 
 function stylizeComment(commentEntity) {
   var name = commentEntity.propertyMap.name;
+  var email = commentEntity.propertyMap.email;
   var comment = commentEntity.propertyMap.comment;
   var time = new Date(commentEntity.propertyMap.time);
 
@@ -161,6 +167,7 @@ function stylizeComment(commentEntity) {
                    <div class="container border">
                      <div class="row">
                        <div class="col text-left">${name}</div>
+                       <div class="col">${email}</div>
                        <div class="col text-right">${time}</div>
                      </div>
                      <div class="row">${comment}</div>
@@ -219,8 +226,11 @@ function formatComments() {
 function paginate(pageNode, comments) {
   var commentEntity = JSON.parse(comments);
   var numComments = commentEntity.num;
-  var numPages = Math.floor((numComments + this.limit - 1) / this.limit);
+  if (numComments === 0) {
+    return;
+  }
 
+  var numPages = Math.floor((numComments + this.limit - 1) / this.limit);
   var pageHTML =
       '<li class="page-item"><a class="page-link" id="prev" href="#">Previous</a></li>';
   for (var i = 1; i <= numPages; i++) {
